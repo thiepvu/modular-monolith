@@ -2,15 +2,19 @@
 
 from uuid import UUID
 from typing import Optional
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .....infrastructure.database.connection import get_db_session
-from .....shared.api.pagination import PaginationParams
-from ...application.dto.user_dto import (
+from src.infrastructure.database.connection import get_db_session
+from src.shared.api.response import ApiResponse
+from src.shared.api.pagination import PaginationParams, PaginatedResponse
+from src.core.domain.enums import UserRoleEnum
+from src.modules.user_management.application.dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,
-    UserEmailUpdateDTO
+    UserEmailUpdateDTO,
+    UserResponseDTO,
+    UserListResponseDTO,
 )
 from .controllers.user_controller import UserController
 
@@ -30,13 +34,10 @@ controller = UserController()
     responses={
         201: {"description": "User created successfully"},
         409: {"description": "User with email or username already exists"},
-        422: {"description": "Validation error"}
-    }
+        422: {"description": "Validation error"},
+    },
 )
-async def create_user(
-    dto: UserCreateDTO,
-    session: AsyncSession = Depends(get_db_session)
-):
+async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_db_session)):
     """Create a new user"""
     return await controller.create_user(dto, session)
 
@@ -46,15 +47,9 @@ async def create_user(
     response_model=None,
     summary="Get user by ID",
     description="Retrieve a specific user by their unique identifier",
-    responses={
-        200: {"description": "User found"},
-        404: {"description": "User not found"}
-    }
+    responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user(
-    user_id: UUID,
-    session: AsyncSession = Depends(get_db_session)
-):
+async def get_user(user_id: UUID, session: AsyncSession = Depends(get_db_session)):
     """Get user by ID"""
     return await controller.get_user(user_id, session)
 
@@ -64,15 +59,9 @@ async def get_user(
     response_model=None,
     summary="Get user by email",
     description="Retrieve a user by their email address",
-    responses={
-        200: {"description": "User found"},
-        404: {"description": "User not found"}
-    }
+    responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user_by_email(
-    email: str,
-    session: AsyncSession = Depends(get_db_session)
-):
+async def get_user_by_email(email: str, session: AsyncSession = Depends(get_db_session)):
     """Get user by email"""
     return await controller.get_user_by_email(email, session)
 
@@ -82,15 +71,9 @@ async def get_user_by_email(
     response_model=None,
     summary="Get user by username",
     description="Retrieve a user by their username",
-    responses={
-        200: {"description": "User found"},
-        404: {"description": "User not found"}
-    }
+    responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user_by_username(
-    username: str,
-    session: AsyncSession = Depends(get_db_session)
-):
+async def get_user_by_username(username: str, session: AsyncSession = Depends(get_db_session)):
     """Get user by username"""
     return await controller.get_user_by_username(username, session)
 
@@ -103,13 +86,11 @@ async def get_user_by_username(
     responses={
         200: {"description": "User updated successfully"},
         404: {"description": "User not found"},
-        422: {"description": "Validation error"}
-    }
+        422: {"description": "Validation error"},
+    },
 )
 async def update_user(
-    user_id: UUID,
-    dto: UserUpdateDTO,
-    session: AsyncSession = Depends(get_db_session)
+    user_id: UUID, dto: UserUpdateDTO, session: AsyncSession = Depends(get_db_session)
 ):
     """Update user profile"""
     return await controller.update_user(user_id, dto, session)
@@ -124,13 +105,11 @@ async def update_user(
         200: {"description": "Email updated successfully"},
         404: {"description": "User not found"},
         409: {"description": "Email already in use"},
-        422: {"description": "Validation error"}
-    }
+        422: {"description": "Validation error"},
+    },
 )
 async def update_user_email(
-    user_id: UUID,
-    dto: UserEmailUpdateDTO,
-    session: AsyncSession = Depends(get_db_session)
+    user_id: UUID, dto: UserEmailUpdateDTO, session: AsyncSession = Depends(get_db_session)
 ):
     """Update user email"""
     return await controller.update_user_email(user_id, dto, session)
@@ -143,13 +122,10 @@ async def update_user_email(
     description="Activate a user account",
     responses={
         200: {"description": "User activated successfully"},
-        404: {"description": "User not found"}
-    }
+        404: {"description": "User not found"},
+    },
 )
-async def activate_user(
-    user_id: UUID,
-    session: AsyncSession = Depends(get_db_session)
-):
+async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_db_session)):
     """Activate user account"""
     return await controller.activate_user(user_id, session)
 
@@ -161,13 +137,10 @@ async def activate_user(
     description="Deactivate a user account",
     responses={
         200: {"description": "User deactivated successfully"},
-        404: {"description": "User not found"}
-    }
+        404: {"description": "User not found"},
+    },
 )
-async def deactivate_user(
-    user_id: UUID,
-    session: AsyncSession = Depends(get_db_session)
-):
+async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_db_session)):
     """Deactivate user account"""
     return await controller.deactivate_user(user_id, session)
 
@@ -180,31 +153,28 @@ async def deactivate_user(
     description="Soft delete a user from the system",
     responses={
         200: {"description": "User deleted successfully"},
-        404: {"description": "User not found"}
-    }
+        404: {"description": "User not found"},
+    },
 )
-async def delete_user(
-    user_id: UUID,
-    session: AsyncSession = Depends(get_db_session)
-):
+async def delete_user(user_id: UUID, session: AsyncSession = Depends(get_db_session)):
     """Delete user (soft delete)"""
     return await controller.delete_user(user_id, session)
 
 
 @router.get(
     "/",
-    response_model=None,
+    response_model=ApiResponse[PaginatedResponse[UserListResponseDTO]],
     summary="List users",
     description="Get a paginated list of all users with optional filtering and search",
-    responses={
-        200: {"description": "Users retrieved successfully"}
-    }
+    responses={200: {"description": "Users retrieved successfully"}},
 )
+
 async def list_users(
+    request: Request,
     params: PaginationParams = Depends(),
     is_active: Optional[bool] = Query(None, description="Filter by active status"),
     search: Optional[str] = Query(None, description="Search in username, name, or email"),
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_db_session),
 ):
     """List all users with pagination, filtering, and search"""
     return await controller.list_users(params, is_active, search, session)

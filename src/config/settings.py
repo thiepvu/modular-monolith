@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = Field(default="/api/v1", description="API v1 prefix")
     API_V2_PREFIX: str = Field(default="/api/v2", description="API v2 prefix")
     
+    # System
+    SERVER_URL: Optional[str] = None
+
     # Database
     DATABASE_URL: str = Field(
         default="postgresql+asyncpg://postgres:postgres@localhost:5432/modular_db",
@@ -56,11 +59,12 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = Field(default="INFO", description="Logging level")
     LOG_FORMAT: str = Field(default="json", description="Log format (json or text)")
     
-    # Redis (Optional)
-    REDIS_HOST: str = Field(default="localhost", description="Redis host")
-    REDIS_PORT: int = Field(default=6379, ge=1, le=65535, description="Redis port")
-    REDIS_DB: int = Field(default=0, ge=0, description="Redis database number")
-    REDIS_PASSWORD: Optional[str] = Field(default=None, description="Redis password")
+    # Redis
+    REDIS_USERNAME: Optional[str] = None
+    REDIS_PASSWORD: Optional[str] = None
+    REDIS_HOST: Optional[str] = None
+    REDIS_PORT: Optional[str] = None
+    REDIS_DB0: Optional[str] = None
     
     # File Upload
     MAX_UPLOAD_SIZE: int = Field(
@@ -79,7 +83,7 @@ class Settings(BaseSettings):
         case_sensitive=True,
         extra="ignore"
     )
-    
+   
     @field_validator("ENVIRONMENT")
     @classmethod
     def validate_environment(cls, v: str) -> str:

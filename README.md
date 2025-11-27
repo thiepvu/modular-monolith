@@ -53,7 +53,7 @@ git clone <repository-url>
 cd modular-monolith
 
 # Create virtual environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
@@ -73,20 +73,26 @@ nano .env
 
 ```bash
 # Create database
-createdb modular_db
+docker compose -f docker-compose.postgresql.yml up --build -d
+
+# Create migrations
+python3 scripts/migrate.py --create "init"
 
 # Run migrations
-python scripts/migrate.py --upgrade
+python3 scripts/migrate.py --upgrade
 
 # Seed initial data
-python scripts/seed.py
+python3 scripts/seed.py
 ```
 
 ### Running the Application
 
 ```bash
 # Development mode
-python src/main.py
+python3 src/main.py
+
+# Or Run with Python module
+python3 -m src.main
 
 # Or with uvicorn
 uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
@@ -234,4 +240,4 @@ MIT License - see LICENSE file for details
 - FastAPI
 - SQLAlchemy
 - Clean Architecture by Robert C. Martin
-- Domain-Driven Design by Eric Evans# modular-monolith
+- Domain-Driven Design by Eric Evans

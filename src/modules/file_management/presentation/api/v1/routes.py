@@ -5,9 +5,9 @@ from typing import Optional
 from fastapi import APIRouter, Depends, UploadFile, File as FastAPIFile, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .....infrastructure.database.connection import get_db_session
-from .....shared.api.pagination import PaginationParams
-from ...application.dto.file_dto import FileUpdateDTO, FileShareDTO
+from src.infrastructure.database.connection import get_db_session
+from src.shared.api.pagination import PaginationParams
+from src.modules.file_management.application.dto.file_dto import FileUpdateDTO, FileShareDTO
 from .controllers.file_controller import FileController
 
 # Create router
@@ -16,8 +16,8 @@ router = APIRouter(prefix="/files", tags=["Files"])
 # Create controller
 controller = FileController()
 
-# TODO: Replace mock user_id with actual authentication
-MOCK_USER_ID = "00000000-0000-0000-0000-000000000001"
+from uuid import UUID
+MOCK_USER_ID = UUID("00000000-0000-0000-0000-000000000001")
 
 
 @router.post(

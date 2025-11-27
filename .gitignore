@@ -160,3 +160,7 @@ logs/
 # Uploads
 uploads/
 temp/
+
+# Visual Studio
+.vs
+myenv_3_12

@@ -4,7 +4,7 @@ Handles all application initialization and configuration.
 """
 
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Any
 import logging
 
 from fastapi import FastAPI
@@ -149,10 +149,10 @@ def _load_modules(app: FastAPI, settings) -> None:
         logger.debug(f"✓ Included {module_name} v1 routes")
     
     # Load v2 routes (if any)
-    v2_routers = module_loader.load_all_routes("v2")
-    for module_name, router in v2_routers:
-        app.include_router(router, prefix=settings.API_V2_PREFIX)
-        logger.debug(f"✓ Included {module_name} v2 routes")
+    # v2_routers = module_loader.load_all_routes("v2")
+    # for module_name, router in v2_routers:
+    #     app.include_router(router, prefix=settings.API_V2_PREFIX)
+    #     logger.debug(f"✓ Included {module_name} v2 routes")
     
     # Store loaded modules in app state
     app.state.loaded_modules = module_loader.loaded_modules

@@ -7,15 +7,15 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 import io
 
-from ......infrastructure.database.connection import get_db_session
-from ......shared.api.base_controller import BaseController
-from ......shared.api.response import ApiResponse
-from ......shared.api.pagination import PaginationParams, PaginatedResponse
-from ......shared.repositories.unit_of_work import UnitOfWork
-from ....infrastructure.persistence.repositories.file_repository import FileRepository
-from ....application.services.file_service import FileService
-from ....application.services.file_storage_service import FileStorageService
-from ....application.dto.file_dto import (
+from src.infrastructure.database.connection import get_db_session
+from src.shared.api.base_controller import BaseController
+from src.shared.api.response import ApiResponse
+from src.shared.api.pagination import PaginationParams, PaginatedResponse
+from src.shared.repositories.unit_of_work import UnitOfWork
+from src.modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
+from src.modules.file_management.application.services.file_service import FileService
+from src.modules.file_management.application.services.file_storage_service import FileStorageService
+from src.modules.file_management.application.dto.file_dto import (
     FileUploadDTO,
     FileUpdateDTO,
     FileResponseDTO,
@@ -59,9 +59,11 @@ class FileController(BaseController):
         """
         # Create DTO
         dto = FileUploadDTO(
-            original_name=file.filename,
-            size=file.size,
-            mime_type=file.content_type,
+            name=file.filename,
+            path="",
+            original_name=file.filename or "unnamed",
+            size=file.size or 0,
+            mime_type=file.content_type or "application/octet-stream",
             description=description,
             is_public=is_public
         )

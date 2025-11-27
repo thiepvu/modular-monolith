@@ -24,7 +24,7 @@ from src.infrastructure.database.base import Base
 try:
     from src.modules.user_management.infrastructure.persistence.models import UserModel
     # Import other module models as you create them:
-    # from src.modules.file_management.infrastructure.persistence.models import FileModel
+    from src.modules.file_management.infrastructure.persistence.models import FileModel
     # from src.modules.project_management.infrastructure.persistence.models import ProjectModel
 except ImportError as e:
     print(f"Warning: Could not import some models: {e}")

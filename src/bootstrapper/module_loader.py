@@ -3,7 +3,7 @@ Dynamic module loader for bounded contexts.
 Discovers and loads modules automatically.
 """
 
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Any
 from importlib import import_module
 from pathlib import Path
 import logging

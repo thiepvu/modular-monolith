@@ -1,7 +1,7 @@
 """File SQLAlchemy models"""
 
-from sqlalchemy import Column, String, Integer, Boolean, Text, ARRAY
-from sqlalchemy.dialects.postgresql import UUID as PGUUID
+from sqlalchemy import Column, String, Integer, Boolean, Text
+from sqlalchemy.dialects.postgresql import ARRAY, UUID as PGUUID
 
 from .....infrastructure.database.base import BaseModel
 
@@ -20,7 +20,7 @@ class FileModel(BaseModel):
     description = Column(Text, nullable=True, comment="File description")
     is_public = Column(Boolean, default=False, nullable=False, index=True, comment="Public access")
     download_count = Column(Integer, default=0, nullable=False, comment="Download count")
-    shared_with = Column(ARRAY(PGUUID(as_uuid=True)), default=[], comment="Shared with user IDs")
+    shared_with = Column(ARRAY(PGUUID(as_uuid=True)), default=list, nullable=False, comment="Shared with user IDs")
     
     def __repr__(self) -> str:
         return f"<FileModel(id={self.id}, name={self.original_name})>"
