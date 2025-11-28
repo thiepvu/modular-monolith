@@ -9,9 +9,9 @@ from typing import AsyncGenerator, Generator
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from httpx import AsyncClient
 
-from src.bootstrapper.app_factory import create_app
-from src.infrastructure.database.base import Base
-from src.config.settings import get_settings
+from bootstrapper.app_factory import create_app
+from infrastructure.database.base import Base
+from config.settings import get_settings
 
 # Test database URL
 TEST_DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/modular_test_db"
@@ -77,7 +77,7 @@ async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
     app = create_app()
     
     # Override database dependency
-    from src.infrastructure.database.connection import get_db_session
+    from infrastructure.database.connection import get_db_session
     
     async def override_get_db():
         yield db_session

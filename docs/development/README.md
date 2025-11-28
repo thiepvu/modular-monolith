@@ -104,7 +104,7 @@ mkdir -p src/modules/your_module/{domain,application,infrastructure,presentation
 
 ```python
 # src/modules/your_module/domain/entities/your_entity.py
-from src.core.domain.base_aggregate import AggregateRoot
+from core.domain.base_aggregate import AggregateRoot
 
 class YourEntity(AggregateRoot):
     def __init__(self, name: str, id: Optional[UUID] = None):
@@ -121,7 +121,7 @@ class YourEntity(AggregateRoot):
 ```python
 # src/modules/your_module/infrastructure/persistence/models.py
 from sqlalchemy import Column, String
-from src.infrastructure.database.base import BaseModel
+from infrastructure.database.base import BaseModel
 
 class YourEntityModel(BaseModel):
     __tablename__ = "your_entities"
@@ -132,7 +132,7 @@ class YourEntityModel(BaseModel):
 
 ```python
 # src/modules/your_module/infrastructure/persistence/repositories/your_repository.py
-from src.shared.repositories.base_repository import BaseRepository
+from shared.repositories.base_repository import BaseRepository
 
 class YourRepository(BaseRepository[YourEntity, YourEntityModel]):
     def _to_entity(self, model: YourEntityModel) -> YourEntity:
@@ -207,7 +207,7 @@ from typing import Optional
 from fastapi import FastAPI
 from sqlalchemy import select
 
-from src.core.domain import BaseEntity
+from core.domain import BaseEntity
 ```
 
 ### Docstrings
@@ -237,7 +237,7 @@ def calculate_total(items: List[Item]) -> Decimal:
 ```python
 # tests/unit/modules/your_module/test_entity.py
 import pytest
-from src.modules.your_module.domain.entities import YourEntity
+from modules.your_module.domain.entities import YourEntity
 
 def test_create_entity():
     entity = YourEntity.create(name="Test")
@@ -321,7 +321,7 @@ import ipdb; ipdb.set_trace()
       "type": "python",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["src.main:app", "--reload"],
+      "args": ["main:app", "--reload"],
       "jinja": true
     }
   ]

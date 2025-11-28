@@ -2,8 +2,8 @@
 
 import pytest
 
-from src.modules.user_management.domain.value_objects.email import Email
-from src.modules.user_management.domain.exceptions.user_exceptions import InvalidEmailException
+from modules.user_management.domain.value_objects.email import Email
+from modules.user_management.domain.exceptions.user_exceptions import InvalidEmailException
 
 
 class TestEmailValueObject:

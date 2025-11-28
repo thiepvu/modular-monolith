@@ -14,8 +14,8 @@ import logging
 from sqlalchemy import text
 
 # Import from YOUR project - adjust these paths to match your structure
-from src.infrastructure.database.connection import DatabaseConnection 
-from src.config.settings import get_settings
+from infrastructure.database.connection import DatabaseConnection 
+from config.settings import get_settings
 
 logging.basicConfig(
     level=logging.INFO,

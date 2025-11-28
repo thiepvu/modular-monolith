@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class ModuleLoader:
     """Dynamic module loader for bounded contexts"""
     
-    def __init__(self, modules_path: str = "src.modules"):
+    def __init__(self, modules_path: str = "modules"):
         """
         Initialize module loader.
         

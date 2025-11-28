@@ -24,9 +24,9 @@ import logging
 from sqlalchemy import text
 
 # Import from YOUR project
-from src.infrastructure.database.connection import DatabaseConnection
-from src.infrastructure.database.base import MODULE_BASES
-from src.config.settings import get_settings
+from infrastructure.database.connection import DatabaseConnection
+from infrastructure.database.base import MODULE_BASES
+from config.settings import get_settings
 
 logging.basicConfig(
     level=logging.INFO,
@@ -116,14 +116,14 @@ def verify_models_loaded() -> bool:
     
     try:
         # Import all models - ADJUST THESE IMPORTS TO YOUR PROJECT
-        from src.modules.user_management.infrastructure.persistence import models as UserModel
+        from modules.user_management.infrastructure.persistence import models as UserModel
         logger.info("  ✓ User management models loaded")
         
-        from src.modules.file_management.infrastructure.persistence import models as FileModel
+        from modules.file_management.infrastructure.persistence import models as FileModel
         logger.info("  ✓ File management models loaded")
         
         # Add more modules as you create them:
-        # from src.modules.project_management.infrastructure.persistence import models as ProjectModel
+        # from modules.project_management.infrastructure.persistence import models as ProjectModel
         # logger.info("  ✓ Project management models loaded")
         
         return True

@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime
 from uuid import uuid4
 
-from src.core.domain.base_entity import BaseEntity
+from core.domain.base_entity import BaseEntity
 
 
 class TestBaseEntity:

@@ -19,8 +19,8 @@ import logging
 from sqlalchemy import text
 
 # Import from YOUR project
-from src.infrastructure.database.connection import db
-from src.config.settings import get_settings
+from infrastructure.database.connection import db
+from config.settings import get_settings
 
 # MORE VERBOSE LOGGING
 logging.basicConfig(
@@ -42,7 +42,7 @@ logger.info("=" * 60)
 
 try:
     logger.info("Importing user seeder...")
-    from src.modules.user_management.infrastructure.persistence.seeds import seed_users
+    from modules.user_management.infrastructure.persistence.seeds import seed_users
     logger.info("✓ User seeder imported")
 except Exception as e:
     logger.error(f"✗ Failed to import user seeder: {e}")
@@ -52,7 +52,7 @@ except Exception as e:
 
 try:
     logger.info("Importing file seeder...")
-    from src.modules.file_management.infrastructure.persistence.seeds import seed_files
+    from modules.file_management.infrastructure.persistence.seeds import seed_files
     logger.info("✓ File seeder imported")
 except Exception as e:
     logger.error(f"✗ Failed to import file seeder: {e}")

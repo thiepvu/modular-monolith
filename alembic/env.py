@@ -16,25 +16,25 @@ project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 # Import MODULE_BASES registry
-from src.infrastructure.database.base import MODULE_BASES
+from infrastructure.database.base import MODULE_BASES
 
 # Import all module models to register them in MODULE_BASES
 # This is CRUCIAL - importing models registers them
 try:
-    from src.modules.user_management.infrastructure.persistence import models as UserModel
+    from modules.user_management.infrastructure.persistence import models as UserModel
     print("✓ Loaded user_management models")
 except ImportError as e:
     print(f"⚠ Could not import user_management models: {e}")
 
 try:
-    from src.modules.file_management.infrastructure.persistence import models as FileModel
+    from modules.file_management.infrastructure.persistence import models as FileModel
     print("✓ Loaded file_management models")
 except ImportError as e:
     print(f"⚠ Could not import file_management models: {e}")
 
 # Add more modules as needed:
 # try:
-#     from src.modules.project_management.infrastructure.persistence import models as ProjectModel
+#     from modules.project_management.infrastructure.persistence import models as ProjectModel
 #     print("✓ Loaded project_management models")
 # except ImportError as e:
 #     print(f"⚠ Could not import project_management models: {e}")
@@ -67,7 +67,7 @@ def get_url() -> str:
     Get database URL from settings.
     Converts async URL to sync if needed.
     """
-    from src.config.settings import get_settings
+    from config.settings import get_settings
     settings = get_settings()
     
     url = settings.DATABASE_URL

@@ -2,8 +2,8 @@
 
 import pytest
 
-from src.modules.user_management.domain.entities.user import User
-from src.modules.user_management.domain.exceptions.user_exceptions import (
+from modules.user_management.domain.entities.user import User
+from modules.user_management.domain.exceptions.user_exceptions import (
     InvalidEmailException,
     InvalidUserStateException
 )

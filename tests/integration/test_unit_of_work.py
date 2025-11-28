@@ -2,9 +2,9 @@
 
 import pytest
 
-from src.shared.repositories.unit_of_work import UnitOfWork
-from src.modules.user_management.domain.entities.user import User
-from src.modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
+from shared.repositories.unit_of_work import UnitOfWork
+from modules.user_management.domain.entities.user import User
+from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
 
 
 class TestUnitOfWork:

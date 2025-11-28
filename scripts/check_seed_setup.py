@@ -56,7 +56,7 @@ print("-" * 70)
 
 try:
     print("  Importing settings...")
-    from src.config.settings import get_settings
+    from config.settings import get_settings
     settings = get_settings()
     print(f"    ✓ Settings imported")
     print(f"    DATABASE_URL: {settings.DATABASE_URL[:30]}...")
@@ -69,7 +69,7 @@ except Exception as e:
 
 try:
     print("  Importing database connection...")
-    from src.infrastructure.database.connection import db
+    from infrastructure.database.connection import db
     print("    ✓ Database connection imported")
 except Exception as e:
     print(f"  ✗ Failed to import database connection: {e}")
@@ -79,7 +79,7 @@ except Exception as e:
 
 try:
     print("  Importing base models...")
-    from src.infrastructure.database.base import MODULE_BASES
+    from infrastructure.database.base import MODULE_BASES
     print(f"    ✓ Base models imported")
     print(f"    Registered modules: {list(MODULE_BASES.keys())}")
 except Exception as e:
@@ -90,7 +90,7 @@ except Exception as e:
 
 try:
     print("  Importing user models...")
-    from src.modules.user_management.infrastructure.persistence.models import (
+    from modules.user_management.infrastructure.persistence.models import (
         UserModel, UserProfileModel
     )
     print(f"    ✓ User models imported")
@@ -104,7 +104,7 @@ except Exception as e:
 
 try:
     print("  Importing file models...")
-    from src.modules.file_management.infrastructure.persistence.models import FileModel
+    from modules.file_management.infrastructure.persistence.models import FileModel
     print(f"    ✓ File models imported")
     print(f"    FileModel table: {FileModel.__tablename__}")
 except Exception as e:
@@ -115,7 +115,7 @@ except Exception as e:
 
 try:
     print("  Importing user seeder...")
-    from src.modules.user_management.infrastructure.persistence.seeds import seed_users
+    from modules.user_management.infrastructure.persistence.seeds import seed_users
     print(f"    ✓ User seeder imported")
     print(f"    Function: {seed_users.__name__}")
     
@@ -136,7 +136,7 @@ except Exception as e:
 
 try:
     print("  Importing file seeder...")
-    from src.modules.file_management.infrastructure.persistence.seeds import seed_files
+    from modules.file_management.infrastructure.persistence.seeds import seed_files
     print(f"    ✓ File seeder imported")
     print(f"    Function: {seed_files.__name__}")
     

@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models import FileModel
-from src.modules.user_management.infrastructure.persistence.models import UserModel
+from modules.user_management.infrastructure.persistence.models import UserModel
 
 logger = logging.getLogger(__name__)
 

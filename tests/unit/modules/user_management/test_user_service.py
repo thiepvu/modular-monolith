@@ -4,10 +4,10 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock
 from uuid import uuid4
 
-from src.modules.user_management.application.services.user_service import UserService
-from src.modules.user_management.application.dto.user_dto import UserCreateDTO, UserUpdateDTO
-from src.modules.user_management.domain.entities.user import User
-from src.core.exceptions.base_exceptions import NotFoundException, ConflictException
+from modules.user_management.application.services.user_service import UserService
+from modules.user_management.application.dto.user_dto import UserCreateDTO, UserUpdateDTO
+from modules.user_management.domain.entities.user import User
+from core.exceptions.base_exceptions import NotFoundException, ConflictException
 
 
 class TestUserService:

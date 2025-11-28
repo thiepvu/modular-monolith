@@ -3,8 +3,8 @@
 import pytest
 from uuid import uuid4
 
-from src.modules.user_management.domain.entities.user import User
-from src.modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
+from modules.user_management.domain.entities.user import User
+from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
 
 
 class TestUserRepository:

@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.core.domain.value_objects import ValueObject
+from core.domain.value_objects import ValueObject
 
 
 class TestValueObject(ValueObject):

@@ -331,7 +331,7 @@ const ModuleDependencyFlows = () => {
                     Two modules evolve together with coordinated changes
                   </div>
                   <div className="text-xs bg-white p-2 rounded border border-indigo-200">
-                    User ⇄ Authentication<br/>
+                    User ⇄ Authentication<br />
                     (tightly integrated)
                   </div>
                 </div>
@@ -342,7 +342,7 @@ const ModuleDependencyFlows = () => {
                     Upstream provides services to downstream
                   </div>
                   <div className="text-xs bg-white p-2 rounded border border-green-200">
-                    User → Project<br/>
+                    User → Project<br />
                     (Project depends on User)
                   </div>
                 </div>
@@ -353,7 +353,7 @@ const ModuleDependencyFlows = () => {
                     Well-documented shared protocol
                   </div>
                   <div className="text-xs bg-white p-2 rounded border border-purple-200">
-                    Domain Events<br/>
+                    Domain Events<br />
                     (JSON Schema defined)
                   </div>
                 </div>
@@ -430,7 +430,7 @@ const ModuleDependencyFlows = () => {
           <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-400 rounded-lg p-6">
             <h3 className="font-bold text-xl text-blue-900 mb-4">🏗️ Code Organization Patterns</h3>
             <div className="space-y-4">
-              
+
               {/* Pattern 1: Public API */}
               <div className="bg-white p-4 rounded-lg border-2 border-blue-300">
                 <h4 className="font-semibold text-blue-900 mb-3">1. Explicit Public API (Module Facade)</h4>
@@ -631,11 +631,11 @@ const ModuleDependencyFlows = () => {
           <div className="bg-white p-6 rounded-lg border-2 border-teal-400 shadow-lg">
             <h3 className="font-bold text-xl text-teal-900 mb-4">🛠️ Architecture Testing Tools</h3>
             <div className="grid grid-cols-2 gap-6">
-              
+
               {/* Python Tools */}
               <div className="space-y-4">
                 <h4 className="font-semibold text-teal-800 bg-teal-100 p-2 rounded">Python / FastAPI</h4>
-                
+
                 <div className="bg-teal-50 border-2 border-teal-300 rounded-lg p-4">
                   <h5 className="font-bold text-teal-900 mb-2">1. Import Linter</h5>
                   <div className="bg-slate-900 text-green-400 p-3 rounded font-mono text-xs mb-2">
@@ -646,10 +646,10 @@ const ModuleDependencyFlows = () => {
                     <div>name = "Domain independence"</div>
                     <div>type = "forbidden"</div>
                     <div>source_modules = [</div>
-                    <div className="ml-4">"src.modules.*.domain"</div>
+                    <div className="ml-4">"modules.*.domain"</div>
                     <div>]</div>
                     <div>forbidden_modules = [</div>
-                    <div className="ml-4">"src.modules.*.infrastructure",</div>
+                    <div className="ml-4">"modules.*.infrastructure",</div>
                     <div className="ml-4">"fastapi"</div>
                     <div>]</div>
                   </div>
@@ -685,7 +685,7 @@ const ModuleDependencyFlows = () => {
               {/* TypeScript/NestJS Tools */}
               <div className="space-y-4">
                 <h4 className="font-semibold text-blue-800 bg-blue-100 p-2 rounded">TypeScript / NestJS</h4>
-                
+
                 <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
                   <h5 className="font-bold text-blue-900 mb-2">1. ESLint with Custom Rules</h5>
                   <div className="bg-slate-900 text-green-400 p-3 rounded font-mono text-xs mb-2">
@@ -874,11 +874,10 @@ const ModuleDependencyFlows = () => {
             <button
               key={key}
               onClick={() => setSelectedView(key)}
-              className={`px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${
-                selectedView === key
+              className={`px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${selectedView === key
                   ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
                   : 'bg-white text-slate-700 border-2 border-slate-300 hover:border-indigo-400'
-              }`}
+                }`}
             >
               {view.title}
             </button>

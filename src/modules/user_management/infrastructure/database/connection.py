@@ -5,7 +5,7 @@ Automatically connects to user_schema.
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infrastructure.database.connection import db
+from infrastructure.database.connection import db
 
 async def get_user_db_session() -> AsyncGenerator[AsyncSession, None]:
     """

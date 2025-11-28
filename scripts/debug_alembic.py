@@ -14,7 +14,7 @@ print("=" * 60)
 # Test 1: Import config
 print("\n1. Testing config...")
 try:
-    from src.config import get_settings
+    from config import get_settings
     settings = get_settings()
     print(f"   ✓ Config loaded")
     print(f"   Database URL: {settings.DATABASE_URL[:30]}...")
@@ -28,7 +28,7 @@ except Exception as e:
 # Test 2: Import database
 print("\n2. Testing database module...")
 try:
-    from src.infrastructure.database.base import MODULE_BASES
+    from infrastructure.database.base import MODULE_BASES
     print(f"   ✓ Database module loaded")
     print(f"   Registered modules: {list(MODULE_BASES.keys())}")
 except Exception as e:
@@ -40,9 +40,9 @@ except Exception as e:
 # Test 3: Import models
 print("\n3. Testing model imports...")
 try:
-    from src.modules.user_management.infrastructure.persistence import models as UserModel
+    from modules.user_management.infrastructure.persistence import models as UserModel
     print(f"   ✓ User models loaded")
-    from src.modules.file_management.infrastructure.persistence import models as FileModel
+    from modules.file_management.infrastructure.persistence import models as FileModel
     print(f"   ✓ File models loaded")
 
 except Exception as e:

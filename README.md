@@ -92,10 +92,10 @@ python3 scripts/seed.py
 python3 src/main.py
 
 # Or Run with Python module
-python3 -m src.main
+python3 -B -m main
 
 # Or with uvicorn
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
 
 ### Access the Application
