@@ -21,8 +21,8 @@ import logging
 from sqlalchemy import text
 
 # Import from YOUR project
-from src.infrastructure.database.connection import db
-from src.config.settings import get_settings
+from infrastructure.database.connection import db
+from config.settings import get_settings
 
 logging.basicConfig(
     level=logging.INFO,
@@ -38,8 +38,8 @@ settings = get_settings()
 # ============================================================================
 
 # Import seeder functions from each module
-from src.modules.user_management.infrastructure.persistence.seeds import seed_users
-from src.modules.file_management.infrastructure.persistence.seeds import seed_files
+from modules.user_management.infrastructure.persistence.seeds import seed_users
+from modules.file_management.infrastructure.persistence.seeds import seed_files
 
 SEEDERS = {
     "user": seed_users,
