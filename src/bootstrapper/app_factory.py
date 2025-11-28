@@ -13,16 +13,16 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..config.settings import get_settings
-from ..config.logging_config import setup_logging
-from ..infrastructure.database.connection import db
-from ..shared.api.error_handler import (
+from config.settings import get_settings
+from config.logging_config import setup_logging
+from infrastructure.database.connection import db
+from shared.api.error_handler import (
     app_exception_handler,
     validation_exception_handler,
     database_exception_handler,
     generic_exception_handler
 )
-from ..core.exceptions.base_exceptions import BaseException as AppBaseException
+from core.exceptions.base_exceptions import BaseException as AppBaseException
 from .module_loader import ModuleLoader
 
 logger = logging.getLogger(__name__)

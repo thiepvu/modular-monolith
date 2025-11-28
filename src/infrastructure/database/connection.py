@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import NullPool, AsyncAdaptedQueuePool
 import logging
 
-from ...config.settings import get_settings
+from config.settings import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

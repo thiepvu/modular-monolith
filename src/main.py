@@ -3,7 +3,7 @@ Application entry point.
 """
 
 import uvicorn
-from src.bootstrapper.app_factory import create_app
+from bootstrapper.app_factory import create_app
 
 # Create application instance
 app = create_app()

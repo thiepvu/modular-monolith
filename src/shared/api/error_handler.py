@@ -6,7 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import SQLAlchemyError
 import logging
 
-from ...core.exceptions.base_exceptions import BaseException as AppBaseException
+from core.exceptions.base_exceptions import BaseException as AppBaseException
 
 logger = logging.getLogger(__name__)
 
