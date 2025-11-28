@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker
 )
-from sqlalchemy.pool import NullPool, QueuePool
+from sqlalchemy.pool import NullPool, AsyncAdaptedQueuePool
 import logging
 
 from ...config.settings import get_settings
@@ -48,18 +48,19 @@ class DatabaseConnection:
             "future": True,
         }
         
-        # Use NullPool for testing, QueuePool for production
+        # Use NullPool for testing, AsyncAdaptedQueuePool for production
         if settings.is_testing:
             engine_kwargs["poolclass"] = NullPool
             logger.debug("Using NullPool for testing")
         else:
-            engine_kwargs["poolclass"] = QueuePool
+            # CRITICAL FIX: Use AsyncAdaptedQueuePool for async engine
+            engine_kwargs["poolclass"] = AsyncAdaptedQueuePool
             engine_kwargs["pool_size"] = settings.DB_POOL_SIZE
             engine_kwargs["max_overflow"] = settings.DB_MAX_OVERFLOW
             engine_kwargs["pool_timeout"] = 30
             engine_kwargs["pool_recycle"] = 3600
             logger.debug(
-                f"Using QueuePool (size={settings.DB_POOL_SIZE}, "
+                f"Using AsyncAdaptedQueuePool (size={settings.DB_POOL_SIZE}, "
                 f"overflow={settings.DB_MAX_OVERFLOW})"
             )
         

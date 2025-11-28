@@ -3,10 +3,16 @@
 from sqlalchemy import Column, String, Integer, Boolean, Text
 from sqlalchemy.dialects.postgresql import ARRAY, UUID as PGUUID
 
-from .....infrastructure.database.base import BaseModel
+from src.infrastructure.database.base import register_module_base
+from src.config.settings import get_settings
 
+# Register Base for file module
+settings = get_settings()
+# Import register_module_base - ADJUST PATH
+# Register module and get Base + BaseModel
+module_base = register_module_base("file", settings.MODULE_SCHEMAS["file"])
 
-class FileModel(BaseModel):
+class FileModel(module_base.BaseModel):
     """File ORM model"""
     
     __tablename__ = "files"
@@ -23,4 +29,4 @@ class FileModel(BaseModel):
     shared_with = Column(ARRAY(PGUUID(as_uuid=True)), default=list, nullable=False, comment="Shared with user IDs")
     
     def __repr__(self) -> str:
-        return f"<FileModel(id={self.id}, name={self.original_name})>"
+        return f"<File(id={self.id}, name={self.original_name})>"

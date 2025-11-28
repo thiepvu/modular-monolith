@@ -3,7 +3,7 @@ Application settings management.
 Uses pydantic-settings for environment variable validation.
 """
 from functools import lru_cache
-from typing import List, Optional
+from typing import List, Optional, Dict
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -33,6 +33,12 @@ class Settings(BaseSettings):
     DB_POOL_SIZE: int = Field(default=10, ge=1, le=100, description="Database pool size")
     DB_MAX_OVERFLOW: int = Field(default=20, ge=0, le=100, description="Database max overflow")
     DB_ECHO: bool = Field(default=False, description="Echo SQL queries")
+
+    # Define schema for each modules
+    MODULE_SCHEMAS: Dict[str, str] = {
+        "user": "user_schema",
+        "file": "file_schema",
+    }
     
     # CORS
     CORS_ORIGINS: List[str] = Field(
