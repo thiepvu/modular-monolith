@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infrastructure.database.connection import get_db_session
+from src.modules.user_management.infrastructure.database import get_user_db_session
 from src.shared.api.response import ApiResponse
 from src.shared.api.pagination import PaginationParams, PaginatedResponse
 from src.core.domain.enums import UserRoleEnum
@@ -37,7 +37,7 @@ controller = UserController()
         422: {"description": "Validation error"},
     },
 )
-async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_db_session)):
+async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_user_db_session)):
     """Create a new user"""
     return await controller.create_user(dto, session)
 
@@ -49,7 +49,7 @@ async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_db
     description="Retrieve a specific user by their unique identifier",
     responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user(user_id: UUID, session: AsyncSession = Depends(get_db_session)):
+async def get_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
     """Get user by ID"""
     return await controller.get_user(user_id, session)
 
@@ -61,7 +61,7 @@ async def get_user(user_id: UUID, session: AsyncSession = Depends(get_db_session
     description="Retrieve a user by their email address",
     responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user_by_email(email: str, session: AsyncSession = Depends(get_db_session)):
+async def get_user_by_email(email: str, session: AsyncSession = Depends(get_user_db_session)):
     """Get user by email"""
     return await controller.get_user_by_email(email, session)
 
@@ -73,7 +73,7 @@ async def get_user_by_email(email: str, session: AsyncSession = Depends(get_db_s
     description="Retrieve a user by their username",
     responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user_by_username(username: str, session: AsyncSession = Depends(get_db_session)):
+async def get_user_by_username(username: str, session: AsyncSession = Depends(get_user_db_session)):
     """Get user by username"""
     return await controller.get_user_by_username(username, session)
 
@@ -90,7 +90,7 @@ async def get_user_by_username(username: str, session: AsyncSession = Depends(ge
     },
 )
 async def update_user(
-    user_id: UUID, dto: UserUpdateDTO, session: AsyncSession = Depends(get_db_session)
+    user_id: UUID, dto: UserUpdateDTO, session: AsyncSession = Depends(get_user_db_session)
 ):
     """Update user profile"""
     return await controller.update_user(user_id, dto, session)
@@ -109,7 +109,7 @@ async def update_user(
     },
 )
 async def update_user_email(
-    user_id: UUID, dto: UserEmailUpdateDTO, session: AsyncSession = Depends(get_db_session)
+    user_id: UUID, dto: UserEmailUpdateDTO, session: AsyncSession = Depends(get_user_db_session)
 ):
     """Update user email"""
     return await controller.update_user_email(user_id, dto, session)
@@ -125,7 +125,7 @@ async def update_user_email(
         404: {"description": "User not found"},
     },
 )
-async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_db_session)):
+async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
     """Activate user account"""
     return await controller.activate_user(user_id, session)
 
@@ -140,7 +140,7 @@ async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_db_se
         404: {"description": "User not found"},
     },
 )
-async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_db_session)):
+async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
     """Deactivate user account"""
     return await controller.deactivate_user(user_id, session)
 
@@ -156,7 +156,7 @@ async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_db_
         404: {"description": "User not found"},
     },
 )
-async def delete_user(user_id: UUID, session: AsyncSession = Depends(get_db_session)):
+async def delete_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
     """Delete user (soft delete)"""
     return await controller.delete_user(user_id, session)
 
@@ -174,7 +174,7 @@ async def list_users(
     params: PaginationParams = Depends(),
     is_active: Optional[bool] = Query(None, description="Filter by active status"),
     search: Optional[str] = Query(None, description="Search in username, name, or email"),
-    session: AsyncSession = Depends(get_db_session),
+    session: AsyncSession = Depends(get_user_db_session),
 ):
     """List all users with pagination, filtering, and search"""
     return await controller.list_users(params, is_active, search, session)

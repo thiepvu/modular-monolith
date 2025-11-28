@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infrastructure.database.connection import get_db_session
+from src.modules.user_management.infrastructure.database import get_user_db_session
 from src.shared.api.base_controller import BaseController
 from src.shared.api.response import ApiResponse
 from src.shared.api.pagination import PaginationParams, PaginatedResponse
@@ -43,7 +43,7 @@ class UserController(BaseController):
     async def create_user(
         self,
         dto: UserCreateDTO,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Create a new user.
@@ -63,7 +63,7 @@ class UserController(BaseController):
     async def get_user(
         self,
         user_id: UUID,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by ID.
@@ -82,7 +82,7 @@ class UserController(BaseController):
     async def get_user_by_email(
         self,
         email: str,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by email.
@@ -105,7 +105,7 @@ class UserController(BaseController):
     async def get_user_by_username(
         self,
         username: str,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by username.
@@ -129,7 +129,7 @@ class UserController(BaseController):
         self,
         user_id: UUID,
         dto: UserUpdateDTO,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Update user profile.
@@ -151,7 +151,7 @@ class UserController(BaseController):
         self,
         user_id: UUID,
         dto: UserEmailUpdateDTO,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Update user email.
@@ -172,7 +172,7 @@ class UserController(BaseController):
     async def activate_user(
         self,
         user_id: UUID,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Activate user account.
@@ -192,7 +192,7 @@ class UserController(BaseController):
     async def deactivate_user(
         self,
         user_id: UUID,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Deactivate user account.
@@ -212,7 +212,7 @@ class UserController(BaseController):
     async def delete_user(
         self,
         user_id: UUID,
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse:
         """
         Delete user (soft delete).
@@ -234,7 +234,7 @@ class UserController(BaseController):
         params: PaginationParams = Depends(),
         is_active: Optional[bool] = Query(None, description="Filter by active status"),
         search: Optional[str] = Query(None, description="Search term"),
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[PaginatedResponse[UserListResponseDTO]]:
         """
         List all users with pagination.

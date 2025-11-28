@@ -5,7 +5,9 @@ from typing import Optional
 from fastapi import APIRouter, Depends, UploadFile, File as FastAPIFile, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infrastructure.database.connection import get_db_session
+# Import module's DB dependency
+from src.modules.file_management.infrastructure.database.connection import get_file_db_session
+
 from src.shared.api.pagination import PaginationParams
 from src.modules.file_management.application.dto.file_dto import FileUpdateDTO, FileShareDTO
 from .controllers.file_controller import FileController
@@ -31,7 +33,7 @@ async def upload_file(
     file: UploadFile = FastAPIFile(...),
     description: Optional[str] = Query(None, description="File description"),
     is_public: bool = Query(False, description="Make file public"),
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_file_db_session)
 ):
     """Upload a new file"""
     return await controller.upload_file(
@@ -51,7 +53,7 @@ async def upload_file(
 )
 async def get_file(
     file_id: UUID,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_file_db_session)
 ):
     """Get file metadata"""
     return await controller.get_file(file_id, MOCK_USER_ID, session)
@@ -66,7 +68,7 @@ async def get_file(
 async def update_file(
     file_id: UUID,
     dto: FileUpdateDTO,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_file_db_session)
 ):
     """Update file metadata"""
     return await controller.update_file(file_id, dto, MOCK_USER_ID, session)
@@ -80,7 +82,7 @@ async def update_file(
 )
 async def delete_file(
     file_id: UUID,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_file_db_session)
 ):
     """Delete file"""
     return await controller.delete_file(file_id, MOCK_USER_ID, session)
@@ -96,7 +98,7 @@ async def list_files(
     params: PaginationParams = Depends(),
     owner_only: bool = Query(False, description="Show only my files"),
     public_only: bool = Query(False, description="Show only public files"),
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_file_db_session)
 ):
     """List files with filters"""
     return await controller.list_files(
@@ -117,7 +119,7 @@ async def list_files(
 async def share_file(
     file_id: UUID,
     dto: FileShareDTO,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_file_db_session)
 ):
     """Share file with user"""
     return await controller.share_file(file_id, dto, MOCK_USER_ID, session)
@@ -137,7 +139,7 @@ async def share_file(
 )
 async def download_file(
     file_id: UUID,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_file_db_session)
 ):
     """Download file"""
     return await controller.download_file(file_id, MOCK_USER_ID, session)

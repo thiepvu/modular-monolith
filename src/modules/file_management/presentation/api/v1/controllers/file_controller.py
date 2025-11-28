@@ -7,7 +7,8 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 import io
 
-from src.infrastructure.database.connection import get_db_session
+# Import module's DB dependency
+from src.modules.file_management.infrastructure.database.connection import get_file_db_session
 from src.shared.api.base_controller import BaseController
 from src.shared.api.response import ApiResponse
 from src.shared.api.pagination import PaginationParams, PaginatedResponse
@@ -42,7 +43,7 @@ class FileController(BaseController):
         description: Optional[str] = None,
         is_public: bool = False,
         user_id: UUID = None,  # TODO: Get from auth
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_file_db_session)
     ) -> ApiResponse[FileResponseDTO]:
         """
         Upload a new file.
@@ -84,7 +85,7 @@ class FileController(BaseController):
         self,
         file_id: UUID,
         user_id: UUID = None,  # TODO: Get from auth
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_file_db_session)
     ) -> ApiResponse[FileResponseDTO]:
         """Get file metadata"""
         service = self._get_service(session)
@@ -96,7 +97,7 @@ class FileController(BaseController):
         file_id: UUID,
         dto: FileUpdateDTO,
         user_id: UUID = None,  # TODO: Get from auth
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_file_db_session)
     ) -> ApiResponse[FileResponseDTO]:
         """Update file metadata"""
         async with UnitOfWork(session):
@@ -108,7 +109,7 @@ class FileController(BaseController):
         self,
         file_id: UUID,
         user_id: UUID = None,  # TODO: Get from auth
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_file_db_session)
     ) -> ApiResponse:
         """Delete file"""
         async with UnitOfWork(session):
@@ -122,7 +123,7 @@ class FileController(BaseController):
         owner_only: bool = Query(False, description="Only my files"),
         public_only: bool = Query(False, description="Only public files"),
         user_id: UUID = None,  # TODO: Get from auth
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_file_db_session)
     ) -> ApiResponse[PaginatedResponse[FileListResponseDTO]]:
         """List files"""
         service = self._get_service(session)
@@ -144,7 +145,7 @@ class FileController(BaseController):
         file_id: UUID,
         dto: FileShareDTO,
         user_id: UUID = None,  # TODO: Get from auth
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_file_db_session)
     ) -> ApiResponse[FileResponseDTO]:
         """Share file with another user"""
         async with UnitOfWork(session):
@@ -156,7 +157,7 @@ class FileController(BaseController):
         self,
         file_id: UUID,
         user_id: UUID = None,  # TODO: Get from auth
-        session: AsyncSession = Depends(get_db_session)
+        session: AsyncSession = Depends(get_file_db_session)
     ) -> StreamingResponse:
         """Download file content"""
         async with UnitOfWork(session):
