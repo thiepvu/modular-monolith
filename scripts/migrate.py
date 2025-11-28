@@ -17,7 +17,7 @@ from alembic.config import Config
 
 def get_alembic_config() -> Config:
     """Get Alembic configuration"""
-    alembic_cfg = Config(str(project_root / "alembic.ini"))
+    alembic_cfg = Config(str(project_root / "src/infrastructure/migrations/alembic.ini"))
     return alembic_cfg
 
 
