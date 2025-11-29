@@ -115,7 +115,7 @@ except Exception as e:
 
 try:
     print("  Importing user seeder...")
-    from modules.user_management.infrastructure.persistence.seeds import seed_users
+    from modules.user_management.infrastructure.database.seeds import seed_users
     print(f"    ✓ User seeder imported")
     print(f"    Function: {seed_users.__name__}")
     
@@ -136,7 +136,7 @@ except Exception as e:
 
 try:
     print("  Importing file seeder...")
-    from modules.file_management.infrastructure.persistence.seeds import seed_files
+    from modules.file_management.infrastructure.database.seeds import seed_files
     print(f"    ✓ File seeder imported")
     print(f"    Function: {seed_files.__name__}")
     
