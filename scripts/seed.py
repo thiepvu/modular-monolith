@@ -38,8 +38,8 @@ settings = get_settings()
 # ============================================================================
 
 # Import seeder functions from each module
-from modules.user_management.infrastructure.persistence.seeds import seed_users
-from modules.file_management.infrastructure.persistence.seeds import seed_files
+from modules.user_management.infrastructure.database.seeds import seed_users
+from modules.file_management.infrastructure.database.seeds import seed_files
 
 SEEDERS = {
     "user": seed_users,

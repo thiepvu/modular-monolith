@@ -42,7 +42,7 @@ logger.info("=" * 60)
 
 try:
     logger.info("Importing user seeder...")
-    from modules.user_management.infrastructure.persistence.seeds import seed_users
+    from modules.user_management.infrastructure.database.seeds import seed_users
     logger.info("✓ User seeder imported")
 except Exception as e:
     logger.error(f"✗ Failed to import user seeder: {e}")
@@ -52,7 +52,7 @@ except Exception as e:
 
 try:
     logger.info("Importing file seeder...")
-    from modules.file_management.infrastructure.persistence.seeds import seed_files
+    from modules.file_management.infrastructure.database.seeds import seed_files
     logger.info("✓ File seeder imported")
 except Exception as e:
     logger.error(f"✗ Failed to import file seeder: {e}")

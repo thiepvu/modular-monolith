@@ -6,7 +6,7 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..models import FileModel
+from ....infrastructure.persistence.models import FileModel
 from modules.user_management.infrastructure.persistence.models import UserModel
 
 logger = logging.getLogger(__name__)

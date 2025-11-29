@@ -24,9 +24,9 @@ print("-" * 70)
 
 files_to_check = [
     "src/modules/user_management/infrastructure/persistence/models.py",
-    "src/modules/user_management/infrastructure/persistence/seeds/seed_users.py",
+    "src/modules/user_management/infrastructure/database/seeds/seed_users.py",
     "src/modules/file_management/infrastructure/persistence/models.py",
-    "src/modules/file_management/infrastructure/persistence/seed_files.py",
+    "src/modules/file_management/infrastructure/database/seed_files.py",
     "src/infrastructure/database/connection.py",
     "src/infrastructure/database/base.py",
     "src/config/settings.py",
