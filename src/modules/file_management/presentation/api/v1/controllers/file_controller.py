@@ -9,10 +9,10 @@ import io
 
 # Import module's DB dependency
 from src.modules.file_management.infrastructure.database.connection import get_file_db_session
-from src.shared.api.base_controller import BaseController
-from src.shared.api.response import ApiResponse
-from src.shared.api.pagination import PaginationParams, PaginatedResponse
-from src.shared.repositories.unit_of_work import UnitOfWork
+from shared.api.base_controller import BaseController
+from shared.api.response import ApiResponse
+from shared.api.pagination import PaginationParams, PaginatedResponse
+from shared.repositories.unit_of_work import UnitOfWork
 from src.modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
 from src.modules.file_management.application.services.file_service import FileService
 from src.modules.file_management.application.services.file_storage_service import FileStorageService
