@@ -7,15 +7,13 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 import io
 
-# Import module's DB dependency
-from modules.file_management.presentation.dependencies import get_file_db_session
 from shared.api.base_controller import BaseController
 from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
 from shared.repositories.unit_of_work import UnitOfWork
-from modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
-from modules.file_management.application.services.file_service import FileService
-from modules.file_management.application.services.file_storage_service import FileStorageService
+
+# Import module's DB dependency
+from modules.file_management.presentation.dependencies import get_file_db_session, get_file_service
 from modules.file_management.application.dto.file_dto import (
     FileUploadDTO,
     FileUpdateDTO,
@@ -30,12 +28,7 @@ class FileController(BaseController):
     
     def __init__(self):
         super().__init__()
-        self._storage_service = FileStorageService()
-    
-    def _get_service(self, session: AsyncSession) -> FileService:
-        """Get service instance"""
-        repository = FileRepository(session)
-        return FileService(repository, self._storage_service)
+        self._file_service = get_file_service  # Initialized per request
     
     async def upload_file(
         self,
@@ -70,7 +63,7 @@ class FileController(BaseController):
         )
         
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._file_service(session)
             
             # Upload file
             uploaded = await service.upload_file(
@@ -88,7 +81,7 @@ class FileController(BaseController):
         session: AsyncSession = Depends(get_file_db_session)
     ) -> ApiResponse[FileResponseDTO]:
         """Get file metadata"""
-        service = self._get_service(session)
+        service = self._file_service(session)
         file = await service.get_file(file_id, user_id)
         return self.success(file)
     
@@ -101,7 +94,7 @@ class FileController(BaseController):
     ) -> ApiResponse[FileResponseDTO]:
         """Update file metadata"""
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._file_service(session)
             updated = await service.update_file(file_id, dto, user_id)
             return self.success(updated, "File updated successfully")
     
@@ -113,7 +106,7 @@ class FileController(BaseController):
     ) -> ApiResponse:
         """Delete file"""
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._file_service(session)
             await service.delete_file(file_id, user_id)
             return self.no_content("File deleted successfully")
     
@@ -126,7 +119,7 @@ class FileController(BaseController):
         session: AsyncSession = Depends(get_file_db_session)
     ) -> ApiResponse[PaginatedResponse[FileListResponseDTO]]:
         """List files"""
-        service = self._get_service(session)
+        service = self._file_service(session)
         
         files = await service.list_files(
             user_id=user_id,
@@ -149,7 +142,7 @@ class FileController(BaseController):
     ) -> ApiResponse[FileResponseDTO]:
         """Share file with another user"""
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._file_service(session)
             shared = await service.share_file(file_id, dto, user_id)
             return self.success(shared, "File shared successfully")
     
@@ -161,7 +154,7 @@ class FileController(BaseController):
     ) -> StreamingResponse:
         """Download file content"""
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._file_service(session)
             file_dto, content = await service.download_file(file_id, user_id)
             
             # Return file as streaming response

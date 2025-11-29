@@ -8,12 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from modules.user_management.presentation.dependencies import get_user_db_session
 from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
-from core.domain.enums import UserRoleEnum
 from modules.user_management.application.dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,
     UserEmailUpdateDTO,
-    UserResponseDTO,
     UserListResponseDTO,
 )
 from .controllers.user_controller import UserController

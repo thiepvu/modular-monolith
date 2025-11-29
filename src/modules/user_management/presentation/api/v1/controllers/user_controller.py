@@ -5,13 +5,12 @@ from typing import Optional
 from fastapi import Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from modules.user_management.presentation.dependencies import get_user_db_session
 from shared.api.base_controller import BaseController
 from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
 from shared.repositories.unit_of_work import UnitOfWork
-from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
-from modules.user_management.application.services.user_service import UserService
+
+from modules.user_management.presentation.dependencies import get_user_db_session, get_user_service
 from modules.user_management.application.dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,
@@ -26,19 +25,7 @@ class UserController(BaseController):
     
     def __init__(self):
         super().__init__()
-    
-    def _get_service(self, session: AsyncSession) -> UserService:
-        """
-        Get user service instance with dependencies.
-        
-        Args:
-            session: Database session
-            
-        Returns:
-            UserService instance
-        """
-        repository = UserRepository(session)
-        return UserService(repository)
+        self._user_service = get_user_service
     
     async def create_user(
         self,
@@ -56,7 +43,7 @@ class UserController(BaseController):
             Created user response
         """
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._user_service(session)
             user = await service.create_user(dto)
             return self.created(user, "User created successfully")
     
@@ -75,7 +62,7 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._get_service(session)
+        service = self._user_service(session)
         user = await service.get_user(user_id)
         return self.success(user)
     
@@ -94,7 +81,7 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._get_service(session)
+        service = self._user_service(session)
         user = await service.get_user_by_email(email)
         
         if not user:
@@ -117,7 +104,7 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._get_service(session)
+        service = self._user_service(session)
         user = await service.get_user_by_username(username)
         
         if not user:
@@ -143,7 +130,7 @@ class UserController(BaseController):
             Updated user response
         """
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._user_service(session)
             user = await service.update_user(user_id, dto)
             return self.success(user, "User updated successfully")
     
@@ -165,7 +152,7 @@ class UserController(BaseController):
             Updated user response
         """
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._user_service(session)
             user = await service.update_user_email(user_id, dto)
             return self.success(user, "Email updated successfully")
     
@@ -185,7 +172,7 @@ class UserController(BaseController):
             Updated user response
         """
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._user_service(session)
             user = await service.activate_user(user_id)
             return self.success(user, "User activated successfully")
     
@@ -205,7 +192,7 @@ class UserController(BaseController):
             Updated user response
         """
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._user_service(session)
             user = await service.deactivate_user(user_id)
             return self.success(user, "User deactivated successfully")
     
@@ -225,7 +212,7 @@ class UserController(BaseController):
             Success response
         """
         async with UnitOfWork(session):
-            service = self._get_service(session)
+            service = self._user_service(session)
             await service.delete_user(user_id)
             return self.no_content("User deleted successfully")
     
@@ -248,7 +235,7 @@ class UserController(BaseController):
         Returns:
             Paginated user list response
         """
-        service = self._get_service(session)
+        service = self._user_service(session)
         
         # Search if search term provided
         if search:

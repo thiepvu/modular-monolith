@@ -9,6 +9,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from infrastructure.database.connection import db
 
+from modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
+from modules.file_management.application.services.file_service import FileService
+from modules.file_management.application.services.file_storage_service import FileStorageService
+
 async def get_file_db_session() -> AsyncGenerator[AsyncSession, None]:
     """
     FastAPI dependency for File module database session.
@@ -29,4 +33,15 @@ async def get_file_db_session() -> AsyncGenerator[AsyncSession, None]:
     async for session in db.get_session():
         yield session
 
-SessionDep = Annotated[AsyncSession, Depends(get_file_db_session)]
+def get_file_service(session: AsyncSession) -> FileService:
+        """
+        Get file service instance with dependencies.
+        
+        Args:
+            session: Database session
+            
+        Returns:
+            FileService instance
+        """
+        repository = FileRepository(session)
+        return FileService(repository, FileStorageService())

@@ -13,7 +13,6 @@ from typing import AsyncGenerator
 from infrastructure.database.connection import db
 from modules.user_management.application.services.user_service import UserService
 from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
-from modules.user_management.infrastructure.persistence.unit_of_work import UserUnitOfWork
 
 
 # Database Session Dependency
@@ -37,82 +36,18 @@ async def get_user_db_session() -> AsyncGenerator[AsyncSession, None]:
     async for session in db.get_session():
         yield session
 
-
-SessionDep = Annotated[AsyncSession, Depends(get_user_db_session)]
-
-
-# Repository Dependencies
-def get_user_repository(
-    session: SessionDep,
-) -> UserRepository:
-    """
-    Provides UserRepository instance with database session.
-    
-    Args:
-        session: Database session from dependency injection
+def get_user_service(session: AsyncSession) -> UserService:
+        """
+        Get user service instance with dependencies.
         
-    Returns:
-        UserRepository: Configured repository instance
-    """
-    return UserRepository(session)
-
-
-UserRepositoryDep = Annotated[UserRepository, Depends(get_user_repository)]
-
-
-# Unit of Work Dependency
-def get_user_uow(
-    session: SessionDep,
-) -> UserUnitOfWork:
-    """
-    Provides Unit of Work pattern implementation for user management.
-    
-    Args:
-        session: Database session from dependency injection
-        
-    Returns:
-        UserUnitOfWork: Unit of work instance for transaction management
-    """
-    return UserUnitOfWork(session)
-
-
-UserUnitOfWorkDep = Annotated[UserUnitOfWork, Depends(get_user_uow)]
-
-
-# Service Dependencies
-def get_user_service(
-    uow: UserUnitOfWorkDep,
-) -> UserService:
-    """
-    Provides UserService instance with all required dependencies.
-    
-    Args:
-        uow: Unit of work for transaction management
-        
-    Returns:
-        UserService: Configured application service
-    """
-    return UserService(uow)
-
-
-UserServiceDep = Annotated[UserService, Depends(get_user_service)]
-
-
-# Alternative: Direct service with repository (if not using UoW)
-def get_user_service_with_repo(
-    repository: UserRepositoryDep,
-) -> UserService:
-    """
-    Alternative service provider using repository directly.
-    Use this if you want to bypass Unit of Work pattern for simple operations.
-    
-    Args:
-        repository: User repository instance
-        
-    Returns:
-        UserService: Configured application service
-    """
-    return UserService(repository)
+        Args:
+            session: Database session
+            
+        Returns:
+            UserService instance
+        """
+        repository = UserRepository(session)
+        return UserService(repository)
 
 
 # Example of additional dependencies for complex scenarios
