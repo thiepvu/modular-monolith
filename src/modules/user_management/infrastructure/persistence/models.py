@@ -7,8 +7,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 
 # Import register_module_base
-from src.infrastructure.database.base import register_module_base
-from src.config.settings import get_settings
+from infrastructure.database.base import register_module_base
+from config.settings import get_settings
 
 # Register module and get Base + BaseModel
 settings = get_settings()

@@ -6,10 +6,10 @@ from fastapi import Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.modules.user_management.infrastructure.database import get_user_db_session
-from src.shared.api.base_controller import BaseController
-from src.shared.api.response import ApiResponse
-from src.shared.api.pagination import PaginationParams, PaginatedResponse
-from src.shared.repositories.unit_of_work import UnitOfWork
+from shared.api.base_controller import BaseController
+from shared.api.response import ApiResponse
+from shared.api.pagination import PaginationParams, PaginatedResponse
+from shared.repositories.unit_of_work import UnitOfWork
 from src.modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
 from src.modules.user_management.application.services.user_service import UserService
 from src.modules.user_management.application.dto.user_dto import (

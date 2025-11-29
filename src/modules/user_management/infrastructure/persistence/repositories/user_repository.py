@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ......shared.repositories.base_repository import BaseRepository
+from shared.repositories.base_repository import BaseRepository
 from ....domain.entities.user import User
 from ....domain.value_objects.email import Email
 from ..models import UserModel

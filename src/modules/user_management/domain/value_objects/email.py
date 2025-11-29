@@ -1,7 +1,7 @@
 """Email value object"""
 
 import re
-from .....core.domain.value_objects import ValueObject
+from core.domain.value_objects import ValueObject
 from ..exceptions.user_exceptions import InvalidEmailException
 
 

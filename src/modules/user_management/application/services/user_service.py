@@ -3,8 +3,8 @@
 from typing import List, Optional
 from uuid import UUID
 
-from .....core.interfaces.services import IService
-from .....core.exceptions.base_exceptions import NotFoundException, ConflictException
+from core.interfaces.services import IService
+from core.exceptions.base_exceptions import NotFoundException, ConflictException
 from ...domain.entities.user import User
 from ...infrastructure.persistence.repositories.user_repository import UserRepository
 from ..dto.user_dto import (

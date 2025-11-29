@@ -3,9 +3,9 @@
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import EmailStr, Field, field_validator
 
-from .....core.application.dto import DTO
+from core.application.dto import DTO
 
 
 class UserCreateDTO(DTO):

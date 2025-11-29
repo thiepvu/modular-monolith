@@ -6,9 +6,9 @@ from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.modules.user_management.infrastructure.database import get_user_db_session
-from src.shared.api.response import ApiResponse
-from src.shared.api.pagination import PaginationParams, PaginatedResponse
-from src.core.domain.enums import UserRoleEnum
+from shared.api.response import ApiResponse
+from shared.api.pagination import PaginationParams, PaginatedResponse
+from core.domain.enums import UserRoleEnum
 from src.modules.user_management.application.dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,

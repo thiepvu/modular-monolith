@@ -3,7 +3,7 @@
 from typing import Optional
 from uuid import UUID
 
-from .....core.domain.base_aggregate import AggregateRoot
+from core.domain.base_aggregate import AggregateRoot
 from ..value_objects.email import Email
 from ..events.user_events import (
     UserCreatedEvent,

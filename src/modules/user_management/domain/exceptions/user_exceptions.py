@@ -1,6 +1,6 @@
 """User-specific domain exceptions"""
 
-from .....core.exceptions.base_exceptions import DomainException
+from core.exceptions.base_exceptions import DomainException
 
 
 class InvalidEmailException(DomainException):
