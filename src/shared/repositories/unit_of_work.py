@@ -7,7 +7,7 @@ from typing import Any, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 
-from ...core.interfaces.unit_of_work import IUnitOfWork
+from core.interfaces.unit_of_work import IUnitOfWork
 
 logger = logging.getLogger(__name__)
 

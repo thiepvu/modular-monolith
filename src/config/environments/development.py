@@ -1,6 +1,6 @@
 """Development environment specific settings"""
 
-from ..settings import Settings
+from config.settings import Settings
 
 
 class DevelopmentSettings(Settings):

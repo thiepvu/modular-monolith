@@ -9,9 +9,9 @@ from sqlalchemy import select, func, update, delete, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 
-from ...core.domain.base_entity import BaseEntity
-from ...core.interfaces.repositories import IRepository
-from ...infrastructure.database.base import BaseModel
+from core.domain.base_entity import BaseEntity
+from core.interfaces.repositories import IRepository
+from infrastructure.database.base import BaseModel
 
 logger = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Generic, List, Optional, TypeVar
 from uuid import UUID
 
-from ..domain.base_entity import BaseEntity
+from core.domain.base_entity import BaseEntity
 
 TEntity = TypeVar("TEntity", bound=BaseEntity)
 

@@ -23,7 +23,7 @@ from shared.api.error_handler import (
     generic_exception_handler
 )
 from core.exceptions.base_exceptions import BaseException as AppBaseException
-from .module_loader import ModuleLoader
+from bootstrapper.module_loader import ModuleLoader
 
 logger = logging.getLogger(__name__)
 

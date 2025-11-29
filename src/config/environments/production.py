@@ -1,7 +1,7 @@
 """Production environment specific settings"""
 
 from pydantic import field_validator
-from ..settings import Settings
+from config.settings import Settings
 
 
 class ProductionSettings(Settings):
