@@ -3,7 +3,7 @@
 from typing import Dict, Any, Optional
 from uuid import UUID
 
-from .....core.domain.events import DomainEvent
+from core.domain.events import DomainEvent
 
 
 class FileUploadedEvent(DomainEvent):

@@ -2,7 +2,7 @@
 
 from typing import Any
 from uuid import UUID
-from .....core.exceptions.base_exceptions import DomainException
+from core.exceptions.base_exceptions import DomainException
 
 
 class InvalidFilePathException(DomainException):

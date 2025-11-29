@@ -1,7 +1,7 @@
 """File path value object"""
 
 from pathlib import Path
-from .....core.domain.value_objects import ValueObject
+from core.domain.value_objects import ValueObject
 from ..exceptions.file_exceptions import InvalidFilePathException
 
 

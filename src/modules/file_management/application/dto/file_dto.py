@@ -5,7 +5,7 @@ from typing import Optional, List
 from uuid import UUID
 from pydantic import Field, field_validator
 
-from .....core.application.dto import DTO
+from core.application.dto import DTO
 
 
 class FileUploadDTO(DTO):

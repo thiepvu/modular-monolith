@@ -5,7 +5,7 @@ from uuid import UUID
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ......shared.repositories.base_repository import BaseRepository
+from shared.repositories.base_repository import BaseRepository
 from ....domain.entities.file import File
 from ....domain.value_objects.file_path import FilePath
 from ....domain.value_objects.file_size import FileSize

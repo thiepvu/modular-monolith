@@ -6,7 +6,7 @@ from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
-from .....core.domain.base_aggregate import AggregateRoot
+from core.domain.base_aggregate import AggregateRoot
 from ..value_objects.file_path import FilePath
 from ..value_objects.file_size import FileSize
 from ..value_objects.mime_type import MimeType
