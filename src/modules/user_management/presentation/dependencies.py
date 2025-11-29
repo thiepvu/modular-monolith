@@ -75,8 +75,8 @@ CurrentUserIdDep = Annotated[str, Depends(get_current_user_id)]
 
 
 # Example with event bus integration (if you use domain events)
-# from src.core.events.event_bus import EventBus
-# from src.infrastructure.events.in_memory_event_bus import InMemoryEventBus
+# from core.events.event_bus import EventBus
+# from infrastructure.events.in_memory_event_bus import InMemoryEventBus
 #
 # def get_event_bus() -> EventBus:
 #     """Provides event bus for domain events."""
@@ -86,7 +86,7 @@ CurrentUserIdDep = Annotated[str, Depends(get_current_user_id)]
 
 
 # Example with caching layer
-# from src.modules.user_management.infrastructure.caching.user_cache import UserCache
+# from modules.user_management.infrastructure.caching.user_cache import UserCache
 #
 # def get_user_cache(session: SessionDep) -> UserCache:
 #     """Provides user cache for read optimization."""

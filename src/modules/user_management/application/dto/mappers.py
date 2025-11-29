@@ -2,7 +2,7 @@
 
 from typing import List
 from .user_dto import UserResponseDTO, UserListResponseDTO
-from ...domain.entities.user import User
+from modules.user_management.domain.entities.user import User
 
 
 class UserMapper:

@@ -2,9 +2,7 @@
 
 from typing import List
 from .file_dto import FileResponseDTO, FileListResponseDTO, FileDownloadResponseDTO
-from ...domain.entities.file import File
-
-
+from modules.file_management.domain.entities.file import File
 class FileMapper:
     """File domain entity to DTO mapper"""
     

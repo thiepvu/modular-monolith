@@ -6,10 +6,10 @@ from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.repositories.base_repository import BaseRepository
-from ....domain.entities.file import File
-from ....domain.value_objects.file_path import FilePath
-from ....domain.value_objects.file_size import FileSize
-from ....domain.value_objects.mime_type import MimeType
+from modules.file_management.domain.entities.file import File
+from modules.file_management.domain.value_objects.file_path import FilePath
+from modules.file_management.domain.value_objects.file_size import FileSize
+from modules.file_management.domain.value_objects.mime_type import MimeType
 from ..models import FileModel
 
 

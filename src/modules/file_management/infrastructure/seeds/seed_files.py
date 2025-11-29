@@ -30,6 +30,7 @@ async def seed_files(session: AsyncSession):
         return
     
     # Get first user as owner (must seed users first!)
+    # TODO: Adjust this if your user model is in a different module
     user_result = await session.execute(select(UserModel).limit(1))
     owner = user_result.scalars().first()
     

@@ -5,8 +5,8 @@ from uuid import UUID
 
 from core.interfaces.services import IService
 from core.exceptions.base_exceptions import NotFoundException, ConflictException
-from ...domain.entities.user import User
-from ...infrastructure.persistence.repositories.user_repository import UserRepository
+from modules.user_management.domain.entities.user import User
+from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
 from ..dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,
