@@ -2,6 +2,8 @@
 Database connection for File module.
 Automatically connects to file_schema.
 """
+from typing import Annotated
+from fastapi import Depends
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,3 +28,5 @@ async def get_file_db_session() -> AsyncGenerator[AsyncSession, None]:
     """
     async for session in db.get_session():
         yield session
+
+SessionDep = Annotated[AsyncSession, Depends(get_file_db_session)]

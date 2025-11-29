@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, UploadFile, File as FastAPIFile, Query, 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # Import module's DB dependency
-from modules.file_management.infrastructure.database.connection import get_file_db_session
+from modules.file_management.presentation.dependencies import get_file_db_session
 
 from shared.api.pagination import PaginationParams
 from modules.file_management.application.dto.file_dto import FileUpdateDTO, FileShareDTO

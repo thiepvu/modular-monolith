@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from modules.user_management.infrastructure.database import get_user_db_session
+from modules.user_management.presentation.dependencies import get_user_db_session
 from shared.api.base_controller import BaseController
 from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse

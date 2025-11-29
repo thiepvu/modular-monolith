@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import io
 
 # Import module's DB dependency
-from modules.file_management.infrastructure.database.connection import get_file_db_session
+from modules.file_management.presentation.dependencies import get_file_db_session
 from shared.api.base_controller import BaseController
 from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
