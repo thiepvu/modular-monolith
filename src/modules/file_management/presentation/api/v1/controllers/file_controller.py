@@ -8,15 +8,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import io
 
 # Import module's DB dependency
-from src.modules.file_management.infrastructure.database.connection import get_file_db_session
+from modules.file_management.infrastructure.database.connection import get_file_db_session
 from shared.api.base_controller import BaseController
 from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
 from shared.repositories.unit_of_work import UnitOfWork
-from src.modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
-from src.modules.file_management.application.services.file_service import FileService
-from src.modules.file_management.application.services.file_storage_service import FileStorageService
-from src.modules.file_management.application.dto.file_dto import (
+from modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
+from modules.file_management.application.services.file_service import FileService
+from modules.file_management.application.services.file_storage_service import FileStorageService
+from modules.file_management.application.dto.file_dto import (
     FileUploadDTO,
     FileUpdateDTO,
     FileResponseDTO,

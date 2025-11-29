@@ -5,11 +5,11 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.user_management.infrastructure.database import get_user_db_session
+from modules.user_management.infrastructure.database import get_user_db_session
 from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
 from core.domain.enums import UserRoleEnum
-from src.modules.user_management.application.dto.user_dto import (
+from modules.user_management.application.dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,
     UserEmailUpdateDTO,

@@ -5,9 +5,9 @@ from uuid import UUID
 
 from core.interfaces.services import IService
 from core.exceptions.base_exceptions import NotFoundException, ForbiddenException
-from src.modules.file_management.domain.entities.file import File
-from src.modules.file_management.domain.exceptions.file_exceptions import FileAccessDeniedException
-from src.modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
+from modules.file_management.domain.entities.file import File
+from modules.file_management.domain.exceptions.file_exceptions import FileAccessDeniedException
+from modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
 from ..dto.file_dto import (
     FileUploadDTO,
     FileUpdateDTO,
