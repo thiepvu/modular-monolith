@@ -3,10 +3,10 @@
 from typing import List, Optional
 from uuid import UUID
 
-from core.interfaces.services import IService
 from core.exceptions.base_exceptions import NotFoundException, ConflictException
 from modules.user_management.domain.entities.user import User
-from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
+from modules.user_management.domain.repositories.user_repository import IUserRepository
+from modules.user_management.application.interfaces.user_service import IUserService
 from ..dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,
@@ -17,13 +17,13 @@ from ..dto.user_dto import (
 from ..dto.mappers import UserMapper
 
 
-class UserService(IService):
+class UserService(IUserService):
     """
     User application service.
     Orchestrates user-related use cases.
     """
     
-    def __init__(self, user_repository: UserRepository):
+    def __init__(self, user_repository: IUserRepository):
         """
         Initialize user service.
         

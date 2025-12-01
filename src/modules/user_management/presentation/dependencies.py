@@ -12,7 +12,9 @@ from typing import AsyncGenerator
 
 from infrastructure.database.connection import db
 from modules.user_management.application.services.user_service import UserService
-from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
+from modules.user_management.application.interfaces.user_service import IUserService
+from modules.user_management.domain.repositories.user_repository import IUserRepository
+from modules.user_management.infrastructure.persistence.repositories import UserRepository
 
 
 # Database Session Dependency
@@ -36,18 +38,14 @@ async def get_user_db_session() -> AsyncGenerator[AsyncSession, None]:
     async for session in db.get_session():
         yield session
 
-def get_user_service(session: AsyncSession) -> UserService:
-        """
-        Get user service instance with dependencies.
-        
-        Args:
-            session: Database session
-            
-        Returns:
-            UserService instance
-        """
-        repository = UserRepository(session)
-        return UserService(repository)
+# make the service provider async and explicitly return IUserService
+def get_user_service(session: AsyncSession) -> IUserService:
+    """
+    Return IUserService instance. The DB session is injected via Depends.
+    """
+    repository: IUserRepository = UserRepository(session)
+    service: IUserService = UserService(repository)
+    return service
 
 
 # Example of additional dependencies for complex scenarios
