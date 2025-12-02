@@ -10,7 +10,7 @@ from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
 from shared.repositories.unit_of_work import UnitOfWork
 
-from modules.user_management.presentation.dependencies import get_user_db_session, get_user_service
+from modules.user_management.presentation.dependencies import get_user_service
 from modules.user_management.application.dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,
@@ -30,27 +30,25 @@ class UserController(BaseController):
     async def create_user(
         self,
         dto: UserCreateDTO,
-        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Create a new user.
         
         Args:
             dto: User creation data
-            session: Database session
             
         Returns:
             Created user response
         """
-        async with UnitOfWork(session):
-            service = self._user_service(session)
+        async with UnitOfWork():
+            service = self._user_service()
             user = await service.create_user(dto)
             return self.created(user, "User created successfully")
     
     async def get_user(
         self,
         user_id: UUID,
-        session: AsyncSession = Depends(get_user_db_session)
+        session: AsyncSession,
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by ID.
@@ -62,14 +60,14 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._user_service(session)
+        service = self._user_service()
         user = await service.get_user(user_id)
         return self.success(user)
     
     async def get_user_by_email(
         self,
         email: str,
-        session: AsyncSession = Depends(get_user_db_session)
+        session: AsyncSession,
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by email.
@@ -81,7 +79,7 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._user_service(session)
+        service = self._user_service()
         user = await service.get_user_by_email(email)
         
         if not user:
@@ -92,7 +90,7 @@ class UserController(BaseController):
     async def get_user_by_username(
         self,
         username: str,
-        session: AsyncSession = Depends(get_user_db_session)
+        session: AsyncSession,
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by username.
@@ -104,7 +102,7 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._user_service(session)
+        service = self._user_service()
         user = await service.get_user_by_username(username)
         
         if not user:
@@ -116,7 +114,6 @@ class UserController(BaseController):
         self,
         user_id: UUID,
         dto: UserUpdateDTO,
-        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Update user profile.
@@ -124,13 +121,12 @@ class UserController(BaseController):
         Args:
             user_id: User UUID
             dto: User update data
-            session: Database session
             
         Returns:
             Updated user response
         """
-        async with UnitOfWork(session):
-            service = self._user_service(session)
+        async with UnitOfWork():
+            service = self._user_service()
             user = await service.update_user(user_id, dto)
             return self.success(user, "User updated successfully")
     
@@ -138,7 +134,6 @@ class UserController(BaseController):
         self,
         user_id: UUID,
         dto: UserEmailUpdateDTO,
-        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Update user email.
@@ -146,73 +141,67 @@ class UserController(BaseController):
         Args:
             user_id: User UUID
             dto: Email update data
-            session: Database session
             
         Returns:
             Updated user response
         """
-        async with UnitOfWork(session):
-            service = self._user_service(session)
+        async with UnitOfWork():
+            service = self._user_service()
             user = await service.update_user_email(user_id, dto)
             return self.success(user, "Email updated successfully")
     
     async def activate_user(
         self,
         user_id: UUID,
-        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Activate user account.
         
         Args:
             user_id: User UUID
-            session: Database session
             
         Returns:
             Updated user response
         """
-        async with UnitOfWork(session):
-            service = self._user_service(session)
+        async with UnitOfWork():
+            service = self._user_service()
             user = await service.activate_user(user_id)
             return self.success(user, "User activated successfully")
     
     async def deactivate_user(
         self,
         user_id: UUID,
-        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[UserResponseDTO]:
         """
         Deactivate user account.
         
         Args:
             user_id: User UUID
-            session: Database session
             
         Returns:
             Updated user response
         """
-        async with UnitOfWork(session):
-            service = self._user_service(session)
+        async with UnitOfWork():
+            service = self._user_service()
             user = await service.deactivate_user(user_id)
             return self.success(user, "User deactivated successfully")
     
     async def delete_user(
         self,
         user_id: UUID,
-        session: AsyncSession = Depends(get_user_db_session)
+        session: AsyncSession,
     ) -> ApiResponse:
         """
         Delete user (soft delete).
         
         Args:
             user_id: User UUID
-            session: Database session
             
         Returns:
             Success response
         """
-        async with UnitOfWork(session):
-            service = self._user_service(session)
+        async with UnitOfWork():
+            service = self._user_service()
             await service.delete_user(user_id)
             return self.no_content("User deleted successfully")
     
@@ -221,7 +210,6 @@ class UserController(BaseController):
         params: PaginationParams = Depends(),
         is_active: Optional[bool] = Query(None, description="Filter by active status"),
         search: Optional[str] = Query(None, description="Search term"),
-        session: AsyncSession = Depends(get_user_db_session)
     ) -> ApiResponse[PaginatedResponse[UserListResponseDTO]]:
         """
         List all users with pagination.
@@ -235,7 +223,7 @@ class UserController(BaseController):
         Returns:
             Paginated user list response
         """
-        service = self._user_service(session)
+        service = self._user_service()
         
         # Search if search term provided
         if search:

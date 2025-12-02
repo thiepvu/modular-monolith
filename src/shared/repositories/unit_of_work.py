@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 
 from core.interfaces.unit_of_work import IUnitOfWork
+from infrastructure.database.session_context import get_current_session
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +19,12 @@ class UnitOfWork(IUnitOfWork):
     Manages transactions and ensures data consistency.
     """
     
-    def __init__(self, session: AsyncSession):
+    def __init__(self):
         """
         Initialize Unit of Work.
-        
-        Args:
-            session: SQLAlchemy async session
+
         """
-        self._session = session
+        self._session = get_current_session()
         self._is_committed = False
         self._is_rolled_back = False
     

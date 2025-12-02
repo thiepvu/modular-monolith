@@ -37,7 +37,7 @@ controller = UserController()
 )
 async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_user_db_session)):
     """Create a new user"""
-    return await controller.create_user(dto, session)
+    return await controller.create_user(dto)
 
 
 @router.get(
@@ -49,7 +49,7 @@ async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_us
 )
 async def get_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
     """Get user by ID"""
-    return await controller.get_user(user_id, session)
+    return await controller.get_user(user_id)
 
 
 @router.get(
@@ -61,7 +61,7 @@ async def get_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_se
 )
 async def get_user_by_email(email: str, session: AsyncSession = Depends(get_user_db_session)):
     """Get user by email"""
-    return await controller.get_user_by_email(email, session)
+    return await controller.get_user_by_email(email)
 
 
 @router.get(
@@ -73,7 +73,7 @@ async def get_user_by_email(email: str, session: AsyncSession = Depends(get_user
 )
 async def get_user_by_username(username: str, session: AsyncSession = Depends(get_user_db_session)):
     """Get user by username"""
-    return await controller.get_user_by_username(username, session)
+    return await controller.get_user_by_username(username)
 
 
 @router.put(
@@ -91,7 +91,7 @@ async def update_user(
     user_id: UUID, dto: UserUpdateDTO, session: AsyncSession = Depends(get_user_db_session)
 ):
     """Update user profile"""
-    return await controller.update_user(user_id, dto, session)
+    return await controller.update_user(user_id, dto)
 
 
 @router.patch(
@@ -110,7 +110,7 @@ async def update_user_email(
     user_id: UUID, dto: UserEmailUpdateDTO, session: AsyncSession = Depends(get_user_db_session)
 ):
     """Update user email"""
-    return await controller.update_user_email(user_id, dto, session)
+    return await controller.update_user_email(user_id, dto)
 
 
 @router.post(
@@ -125,7 +125,7 @@ async def update_user_email(
 )
 async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
     """Activate user account"""
-    return await controller.activate_user(user_id, session)
+    return await controller.activate_user(user_id)
 
 
 @router.post(
@@ -140,7 +140,7 @@ async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_user_
 )
 async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
     """Deactivate user account"""
-    return await controller.deactivate_user(user_id, session)
+    return await controller.deactivate_user(user_id)
 
 
 @router.delete(
@@ -156,7 +156,7 @@ async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_use
 )
 async def delete_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
     """Delete user (soft delete)"""
-    return await controller.delete_user(user_id, session)
+    return await controller.delete_user(user_id)
 
 
 @router.get(
@@ -175,4 +175,4 @@ async def list_users(
     session: AsyncSession = Depends(get_user_db_session),
 ):
     """List all users with pagination, filtering, and search"""
-    return await controller.list_users(params, is_active, search, session)
+    return await controller.list_users(params, is_active, search)
