@@ -65,3 +65,16 @@ class IUserService(IService):
     @abstractmethod
     async def count_users(self, is_active: Optional[bool] = None) -> int:
         raise NotImplementedError
+    
+    @abstractmethod
+    async def user_exists(self, user_id: UUID) -> bool:
+        """
+        Check if user exists.
+        
+        Args:
+            user_id: User UUID
+            
+        Returns:
+            True if user exists and is active, False otherwise
+        """
+        pass

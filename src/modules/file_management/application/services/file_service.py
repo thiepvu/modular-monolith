@@ -3,11 +3,13 @@
 from typing import List, BinaryIO
 from uuid import UUID
 
-from core.exceptions.base_exceptions import NotFoundException, ForbiddenException
+from core.exceptions.base_exceptions import NotFoundException, ForbiddenException, ValidationException
 from modules.file_management.domain.entities.file import File
 from modules.file_management.domain.repositories.file_repository import IFileRepository
 from modules.file_management.application.interfaces.file_service import IFileService
 from modules.file_management.application.interfaces.file_storage_service import IFileStorageService
+
+from modules.file_management.application.facades.file_facades_service import FileServiceFacade
 from ..dto.file_dto import (
     FileUploadDTO,
     FileUpdateDTO,
@@ -39,6 +41,7 @@ class FileService(IFileService):
         """
         self._repository = file_repository
         self._storage = storage_service
+        self.facade = FileServiceFacade()
         self._mapper = FileMapper()
     
     async def upload_file(
@@ -58,6 +61,13 @@ class FileService(IFileService):
         Returns:
             Uploaded file DTO
         """
+        # check owner 
+        owner_exists = await self.facade.check_owner_exists(owner_id)
+        if not owner_exists:
+            raise ValidationException(
+                f"Owner user {owner_id} does not exist or is inactive. "
+                "Please ensure the user account is valid."
+            )
         # Generate unique filename
         unique_name = self._storage.generate_unique_filename(dto.original_name)
         

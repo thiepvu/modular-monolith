@@ -310,3 +310,23 @@ class UserService(IUserService):
         if is_active is not None:
             return await self._user_repository.count_by_criteria({"is_active": is_active})
         return await self._user_repository.count()
+    
+    async def user_exists(self, user_id: UUID) -> bool:
+        """
+        Check if user exists.
+        
+        Args:
+            user_id: User UUID
+            
+        Returns:
+            True if user exists and is active, False otherwise
+        """
+        
+        # Check in repository
+        user = await self._user_repository.get_by_id(user_id)
+        
+        if not user:
+            return False
+        
+        # Check if active (optional business rule)
+        return user.is_active
