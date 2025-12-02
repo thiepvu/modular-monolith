@@ -10,7 +10,8 @@ from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
 from shared.repositories.unit_of_work import UnitOfWork
 
-from modules.user_management.presentation.dependencies import get_user_service
+from modules.user_management.application.interfaces.user_service import IUserService
+
 from modules.user_management.application.dto.user_dto import (
     UserCreateDTO,
     UserUpdateDTO,
@@ -25,11 +26,11 @@ class UserController(BaseController):
     
     def __init__(self):
         super().__init__()
-        self._user_service = get_user_service
     
     async def create_user(
         self,
         dto: UserCreateDTO,
+        user_service: IUserService 
     ) -> ApiResponse[UserResponseDTO]:
         """
         Create a new user.
@@ -41,14 +42,13 @@ class UserController(BaseController):
             Created user response
         """
         async with UnitOfWork():
-            service = self._user_service()
-            user = await service.create_user(dto)
+            user = await user_service.create_user(dto)
             return self.created(user, "User created successfully")
     
     async def get_user(
         self,
         user_id: UUID,
-        session: AsyncSession,
+        user_service: IUserService 
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by ID.
@@ -60,14 +60,13 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._user_service()
-        user = await service.get_user(user_id)
+        user = await user_service.get_user(user_id)
         return self.success(user)
     
     async def get_user_by_email(
         self,
         email: str,
-        session: AsyncSession,
+        user_service: IUserService 
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by email.
@@ -79,8 +78,7 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._user_service()
-        user = await service.get_user_by_email(email)
+        user = await user_service.get_user_by_email(email)
         
         if not user:
             self.error("User not found", status_code=status.HTTP_404_NOT_FOUND)
@@ -90,7 +88,7 @@ class UserController(BaseController):
     async def get_user_by_username(
         self,
         username: str,
-        session: AsyncSession,
+        user_service: IUserService 
     ) -> ApiResponse[UserResponseDTO]:
         """
         Get user by username.
@@ -102,8 +100,7 @@ class UserController(BaseController):
         Returns:
             User response
         """
-        service = self._user_service()
-        user = await service.get_user_by_username(username)
+        user = await user_service.get_user_by_username(username)
         
         if not user:
             self.error("User not found", status_code=status.HTTP_404_NOT_FOUND)
@@ -114,6 +111,7 @@ class UserController(BaseController):
         self,
         user_id: UUID,
         dto: UserUpdateDTO,
+        user_service: IUserService 
     ) -> ApiResponse[UserResponseDTO]:
         """
         Update user profile.
@@ -126,14 +124,14 @@ class UserController(BaseController):
             Updated user response
         """
         async with UnitOfWork():
-            service = self._user_service()
-            user = await service.update_user(user_id, dto)
+            user = await user_service.update_user(user_id, dto)
             return self.success(user, "User updated successfully")
     
     async def update_user_email(
         self,
         user_id: UUID,
         dto: UserEmailUpdateDTO,
+        user_service: IUserService 
     ) -> ApiResponse[UserResponseDTO]:
         """
         Update user email.
@@ -146,13 +144,13 @@ class UserController(BaseController):
             Updated user response
         """
         async with UnitOfWork():
-            service = self._user_service()
-            user = await service.update_user_email(user_id, dto)
+            user = await user_service.update_user_email(user_id, dto)
             return self.success(user, "Email updated successfully")
     
     async def activate_user(
         self,
         user_id: UUID,
+        user_service: IUserService 
     ) -> ApiResponse[UserResponseDTO]:
         """
         Activate user account.
@@ -164,13 +162,13 @@ class UserController(BaseController):
             Updated user response
         """
         async with UnitOfWork():
-            service = self._user_service()
-            user = await service.activate_user(user_id)
+            user = await user_service.activate_user(user_id)
             return self.success(user, "User activated successfully")
     
     async def deactivate_user(
         self,
         user_id: UUID,
+        user_service: IUserService 
     ) -> ApiResponse[UserResponseDTO]:
         """
         Deactivate user account.
@@ -182,14 +180,13 @@ class UserController(BaseController):
             Updated user response
         """
         async with UnitOfWork():
-            service = self._user_service()
-            user = await service.deactivate_user(user_id)
+            user = await user_service.deactivate_user(user_id)
             return self.success(user, "User deactivated successfully")
     
     async def delete_user(
         self,
         user_id: UUID,
-        session: AsyncSession,
+        user_service: IUserService 
     ) -> ApiResponse:
         """
         Delete user (soft delete).
@@ -201,8 +198,7 @@ class UserController(BaseController):
             Success response
         """
         async with UnitOfWork():
-            service = self._user_service()
-            await service.delete_user(user_id)
+            await user_service.delete_user(user_id)
             return self.no_content("User deleted successfully")
     
     async def list_users(
@@ -210,6 +206,7 @@ class UserController(BaseController):
         params: PaginationParams = Depends(),
         is_active: Optional[bool] = Query(None, description="Filter by active status"),
         search: Optional[str] = Query(None, description="Search term"),
+        user_service: IUserService = None,
     ) -> ApiResponse[PaginatedResponse[UserListResponseDTO]]:
         """
         List all users with pagination.
@@ -223,22 +220,21 @@ class UserController(BaseController):
         Returns:
             Paginated user list response
         """
-        service = self._user_service()
         
         # Search if search term provided
         if search:
-            users = await service.search_users(
+            users = await user_service.search_users(
                 search_term=search,
                 skip=params.skip,
                 limit=params.limit
             )
             total = len(users)  # Simplified - should count from query
         else:
-            users = await service.list_users(
+            users = await user_service.list_users(
                 skip=params.skip,
                 limit=params.limit,
                 is_active=is_active
             )
-            total = await service.count_users(is_active=is_active)
+            total = await user_service.count_users(is_active=is_active)
         
         return self.paginated(users, total, params)

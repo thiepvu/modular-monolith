@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from modules.user_management.presentation.dependencies import get_user_db_session
+from modules.user_management.presentation.dependencies import get_user_db_session, get_user_service
 from shared.api.response import ApiResponse
 from shared.api.pagination import PaginationParams, PaginatedResponse
 from modules.user_management.application.dto.user_dto import (
@@ -35,9 +35,9 @@ controller = UserController()
         422: {"description": "Validation error"},
     },
 )
-async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_user_db_session)):
+async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_user_db_session), user_service = Depends(get_user_service)):
     """Create a new user"""
-    return await controller.create_user(dto)
+    return await controller.create_user(dto, user_service)
 
 
 @router.get(
@@ -47,9 +47,9 @@ async def create_user(dto: UserCreateDTO, session: AsyncSession = Depends(get_us
     description="Retrieve a specific user by their unique identifier",
     responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
+async def get_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session), user_service = Depends(get_user_service)):
     """Get user by ID"""
-    return await controller.get_user(user_id)
+    return await controller.get_user(user_id, user_service)
 
 
 @router.get(
@@ -59,9 +59,9 @@ async def get_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_se
     description="Retrieve a user by their email address",
     responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user_by_email(email: str, session: AsyncSession = Depends(get_user_db_session)):
+async def get_user_by_email(email: str, session: AsyncSession = Depends(get_user_db_session), user_service = Depends(get_user_service)):
     """Get user by email"""
-    return await controller.get_user_by_email(email)
+    return await controller.get_user_by_email(email, user_service)
 
 
 @router.get(
@@ -71,9 +71,9 @@ async def get_user_by_email(email: str, session: AsyncSession = Depends(get_user
     description="Retrieve a user by their username",
     responses={200: {"description": "User found"}, 404: {"description": "User not found"}},
 )
-async def get_user_by_username(username: str, session: AsyncSession = Depends(get_user_db_session)):
+async def get_user_by_username(username: str, session: AsyncSession = Depends(get_user_db_session), user_service = Depends(get_user_service)):
     """Get user by username"""
-    return await controller.get_user_by_username(username)
+    return await controller.get_user_by_username(username, user_service)
 
 
 @router.put(
@@ -88,10 +88,11 @@ async def get_user_by_username(username: str, session: AsyncSession = Depends(ge
     },
 )
 async def update_user(
-    user_id: UUID, dto: UserUpdateDTO, session: AsyncSession = Depends(get_user_db_session)
+    user_id: UUID, dto: UserUpdateDTO, session: AsyncSession = Depends(get_user_db_session),
+    user_service = Depends(get_user_service)
 ):
     """Update user profile"""
-    return await controller.update_user(user_id, dto)
+    return await controller.update_user(user_id, dto, user_service)
 
 
 @router.patch(
@@ -107,10 +108,11 @@ async def update_user(
     },
 )
 async def update_user_email(
-    user_id: UUID, dto: UserEmailUpdateDTO, session: AsyncSession = Depends(get_user_db_session)
+    user_id: UUID, dto: UserEmailUpdateDTO, session: AsyncSession = Depends(get_user_db_session),
+    user_service = Depends(get_user_service)
 ):
     """Update user email"""
-    return await controller.update_user_email(user_id, dto)
+    return await controller.update_user_email(user_id, dto, user_service)
 
 
 @router.post(
@@ -123,9 +125,9 @@ async def update_user_email(
         404: {"description": "User not found"},
     },
 )
-async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
+async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session), user_service = Depends(get_user_service)):
     """Activate user account"""
-    return await controller.activate_user(user_id)
+    return await controller.activate_user(user_id, user_service)
 
 
 @router.post(
@@ -138,9 +140,9 @@ async def activate_user(user_id: UUID, session: AsyncSession = Depends(get_user_
         404: {"description": "User not found"},
     },
 )
-async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
+async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session), user_service = Depends(get_user_service)):
     """Deactivate user account"""
-    return await controller.deactivate_user(user_id)
+    return await controller.deactivate_user(user_id, user_service)
 
 
 @router.delete(
@@ -154,9 +156,9 @@ async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_use
         404: {"description": "User not found"},
     },
 )
-async def delete_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session)):
+async def delete_user(user_id: UUID, session: AsyncSession = Depends(get_user_db_session), user_service = Depends(get_user_service)):
     """Delete user (soft delete)"""
-    return await controller.delete_user(user_id)
+    return await controller.delete_user(user_id, user_service)
 
 
 @router.get(
@@ -173,6 +175,7 @@ async def list_users(
     is_active: Optional[bool] = Query(None, description="Filter by active status"),
     search: Optional[str] = Query(None, description="Search in username, name, or email"),
     session: AsyncSession = Depends(get_user_db_session),
+    user_service = Depends(get_user_service)
 ):
     """List all users with pagination, filtering, and search"""
-    return await controller.list_users(params, is_active, search)
+    return await controller.list_users(params, is_active, search, user_service)

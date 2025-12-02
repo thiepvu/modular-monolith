@@ -3,10 +3,11 @@
 from typing import List, BinaryIO
 from uuid import UUID
 
-from core.interfaces.services import IService
 from core.exceptions.base_exceptions import NotFoundException, ForbiddenException
 from modules.file_management.domain.entities.file import File
-from modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
+from modules.file_management.domain.repositories.file_repository import IFileRepository
+from modules.file_management.application.interfaces.file_service import IFileService
+from modules.file_management.application.interfaces.file_storage_service import IFileStorageService
 from ..dto.file_dto import (
     FileUploadDTO,
     FileUpdateDTO,
@@ -16,10 +17,9 @@ from ..dto.file_dto import (
     FileDownloadResponseDTO
 )
 from ..dto.mappers import FileMapper
-from .file_storage_service import FileStorageService
 
 
-class FileService(IService):
+class FileService(IFileService):
     """
     File application service.
     Orchestrates file-related use cases.
@@ -27,8 +27,8 @@ class FileService(IService):
     
     def __init__(
         self,
-        file_repository: FileRepository,
-        storage_service: FileStorageService
+        file_repository: IFileRepository,
+        storage_service: IFileStorageService
     ):
         """
         Initialize file service.

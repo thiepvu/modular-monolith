@@ -12,6 +12,7 @@ from infrastructure.database.connection import db
 from modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
 from modules.file_management.application.services.file_service import FileService
 from modules.file_management.application.services.file_storage_service import FileStorageService
+from infrastructure.database.session_context import set_current_session, clear_current_session
 
 async def get_file_db_session() -> AsyncGenerator[AsyncSession, None]:
     """
@@ -31,9 +32,17 @@ async def get_file_db_session() -> AsyncGenerator[AsyncSession, None]:
         AsyncSession instance configured for file_schema
     """
     async for session in db.get_session():
+        # Set session vào ContextVar
+        set_current_session(session)
+    
+    try:
+        # Yield session to controller
         yield session
+    finally:
+        # Clear session từ ContextVar khi request kết thúc
+        clear_current_session()
 
-def get_file_service(session: AsyncSession) -> FileService:
+def get_file_service() -> FileService:
         """
         Get file service instance with dependencies.
         
@@ -43,5 +52,5 @@ def get_file_service(session: AsyncSession) -> FileService:
         Returns:
             FileService instance
         """
-        repository = FileRepository(session)
+        repository = FileRepository()
         return FileService(repository, FileStorageService())

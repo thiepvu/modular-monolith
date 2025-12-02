@@ -9,10 +9,11 @@ from typing import BinaryIO, Optional
 import aiofiles
 import logging
 
+from modules.file_management.application.interfaces.file_storage_service import IFileStorageService
 logger = logging.getLogger(__name__)
 
 
-class FileStorageService:
+class FileStorageService(IFileStorageService):
     """
     File storage service for handling physical file operations.
     This is an application service that manages file system operations.

@@ -10,14 +10,25 @@ from modules.file_management.domain.entities.file import File
 from modules.file_management.domain.value_objects.file_path import FilePath
 from modules.file_management.domain.value_objects.file_size import FileSize
 from modules.file_management.domain.value_objects.mime_type import MimeType
+from infrastructure.database.session_context import get_current_session
+from modules.file_management.domain.repositories.file_repository import IFileRepository
 from ..models import FileModel
 
 
-class FileRepository(BaseRepository[File, FileModel]):
+class FileRepository(BaseRepository[File, FileModel], IFileRepository):
     """File repository implementation"""
     
-    def __init__(self, session: AsyncSession):
-        super().__init__(session, File, FileModel)
+    def __init__(self):
+        self._session : AsyncSession = get_current_session()
+        super().__init__(self._session, File, FileModel)
+    async def save(self, file: File) -> File:
+        """
+        Persist a file entity. Delegates to add() for new entities (no id)
+        or update() for existing ones.
+        """
+        if getattr(file, "id", None) is None:
+            return await self.add(file)
+        return await self.update(file)
     
     async def get_by_name(self, name: str) -> Optional[File]:
         """Get file by internal name"""
