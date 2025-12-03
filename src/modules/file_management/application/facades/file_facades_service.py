@@ -7,7 +7,7 @@ from modules.user_management.application.interfaces.user_service import IUserSer
 from modules.user_management.application.services.user_service import UserService
 from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
 
-class FileServiceFacade():
+class FileServiceFacade:
 
     def _get_service(self) -> IUserService:
         """Get user service instance"""
