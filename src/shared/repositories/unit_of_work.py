@@ -24,10 +24,28 @@ class UnitOfWork(IUnitOfWork):
         Initialize Unit of Work.
 
         """
-        self._session = get_current_session()
         self._is_committed = False
         self._is_rolled_back = False
-    
+    @property
+    def _session(self) -> AsyncSession:
+        """
+        Lazy load session from ContextVar.
+        
+        Session được get mỗi khi property được access,
+        đảm bảo session đã được set bởi @with_session decorator.
+        
+        Returns:
+            AsyncSession from ContextVar
+            
+        Raises:
+            RuntimeError: If no session in ContextVar
+            
+        Note:
+            This is called AFTER repository is created,
+            ensuring session is already set by decorator.
+        """
+        return get_current_session()
+        
     async def __aenter__(self) -> "UnitOfWork":
         """
         Enter async context manager.

@@ -6,12 +6,14 @@ from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.repositories.base_repository import BaseRepository
+from infrastructure.database.session_context import get_current_session
+
 from modules.file_management.domain.entities.file import File
 from modules.file_management.domain.value_objects.file_path import FilePath
 from modules.file_management.domain.value_objects.file_size import FileSize
 from modules.file_management.domain.value_objects.mime_type import MimeType
-from infrastructure.database.session_context import get_current_session
 from modules.file_management.domain.repositories.file_repository import IFileRepository
+
 from ..models import FileModel
 
 
@@ -19,8 +21,24 @@ class FileRepository(BaseRepository[File, FileModel], IFileRepository):
     """File repository implementation"""
     
     def __init__(self):
-        self._session : AsyncSession = get_current_session()
-        super().__init__(self._session, File, FileModel)
+        super().__init__(File, FileModel)
+
+    @property
+    def _session(self) -> AsyncSession:
+        """
+        Lazy load session from ContextVar.
+        
+        Session được get mỗi khi property được access,
+        đảm bảo session đã được set bởi @with_session decorator.
+        
+        Returns:
+            AsyncSession from ContextVar
+            
+        Raises:
+            RuntimeError: If no session in ContextVar
+        """
+        return get_current_session()
+    
     async def save(self, file: File) -> File:
         """
         Persist a file entity. Delegates to add() for new entities (no id)

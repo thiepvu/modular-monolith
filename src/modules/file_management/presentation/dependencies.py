@@ -1,57 +1,76 @@
-"""
-Database connection for File module.
-Automatically connects to file_schema.
-"""
+
 from typing import Annotated
 from fastapi import Depends
-from typing import AsyncGenerator
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from infrastructure.database.connection import db
-
-from modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
 from modules.file_management.application.services.file_service import FileService
+from modules.file_management.application.interfaces.file_service import IFileService
 from modules.file_management.application.services.file_storage_service import FileStorageService
-from infrastructure.database.session_context import set_current_session, clear_current_session
+from modules.file_management.application.interfaces.file_storage_service import IFileStorageService
+from modules.file_management.infrastructure.persistence.repositories.file_repository import FileRepository
+from modules.file_management.domain.repositories.file_repository import IFileRepository
 
-async def get_file_db_session() -> AsyncGenerator[AsyncSession, None]:
+# ✅ CROSS-MODULE DEPENDENCY
+from modules.user_management.application.services.user_service import UserService
+from modules.user_management.application.interfaces.user_service import IUserService
+from modules.user_management.infrastructure.persistence.repositories.user_repository import UserRepository
+
+
+# ============================================================================
+# SERVICE DEPENDENCIES
+# ============================================================================
+
+def get_file_storage_service() -> IFileStorageService:
     """
-    FastAPI dependency for File module database session.
+    Get file storage service instance.
     
-    This automatically connects to the correct schema (file_schema)
-    based on the module's configuration.
-    
-    Usage in File module routers:
-        @router.get("/files")
-        async def get_files(session: AsyncSession = Depends(get_file_db_session)):
-            # This session is configured for file_schema
-            result = await session.execute(select(FileModel))
-            return result.scalars().all()
-    
-    Yields:
-        AsyncSession instance configured for file_schema
+    Returns:
+        IFileStorageService instance
     """
-    async for session in db.get_session():
-        # Set session vào ContextVar
-        set_current_session(session)
+    return FileStorageService(storage_path="uploads")
+
+
+def get_file_repository() -> IFileRepository:
+    """
+    Get file repository instance.
     
-    try:
-        # Yield session to controller
-        yield session
-    finally:
-        # Clear session từ ContextVar khi request kết thúc
-        clear_current_session()
+    Repository tự lấy session từ ContextVar (đã set bởi @with_session decorator).
+    
+    Returns:
+        IFileRepository instance
+    """
+    return FileRepository()
 
 
-def get_file_service() -> FileService:
-        """
-        Get file service instance with dependencies.
-        
-        Args:
-            session: Database session
-            
-        Returns:
-            FileService instance
-        """
-        repository = FileRepository()
-        return FileService(repository, FileStorageService())
+def get_user_service() -> IUserService:
+    """
+    Get user service instance (cross-module dependency).
+    
+    Returns:
+        IUserService instance
+    """
+    return UserService(UserRepository())
+
+
+def get_file_service() -> IFileService:
+    """
+    Get file service instance with dependencies.
+    
+    FileService depends on:
+    - IFileRepository (same module)
+    - IFileStorageService (same module)
+    - IUserService (cross-module) ✅
+    
+    Returns:
+        IFileService instance
+    """
+    return FileService(
+        file_repository=get_file_repository(),
+        storage_service=get_file_storage_service(),
+    )
+
+# ============================================================================
+# TYPE ANNOTATIONS FOR CLEAN DEPENDENCY INJECTION
+# ============================================================================
+
+# ✅ Clean type annotation for service
+FileServiceDep = Annotated[IFileService, Depends(get_file_service)]

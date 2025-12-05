@@ -12,6 +12,7 @@ import logging
 from core.domain.base_entity import BaseEntity
 from core.interfaces.repositories import IRepository
 from infrastructure.database.base import BaseModel
+from infrastructure.database.session_context import get_current_session
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,6 @@ class BaseRepository(IRepository[TEntity], Generic[TEntity, TModel]):
     
     def __init__(
         self,
-        session: AsyncSession,
         entity_class: Type[TEntity],
         model_class: Type[TModel]
     ):
@@ -39,10 +39,28 @@ class BaseRepository(IRepository[TEntity], Generic[TEntity, TModel]):
             entity_class: Domain entity class
             model_class: SQLAlchemy model class
         """
-        self._session = session
         self._entity_class = entity_class
         self._model_class = model_class
     
+    @property
+    def _session(self) -> AsyncSession:
+        """
+        Lazy load session from ContextVar.
+        
+        Session được get mỗi khi property được access,
+        đảm bảo session đã được set bởi @with_session decorator.
+        
+        Returns:
+            AsyncSession from ContextVar
+            
+        Raises:
+            RuntimeError: If no session in ContextVar
+            
+        Note:
+            This is called AFTER repository is created,
+            ensuring session is already set by decorator.
+        """
+        return get_current_session()
     async def get_by_id(self, id: UUID) -> Optional[TEntity]:
         """
         Get entity by ID.

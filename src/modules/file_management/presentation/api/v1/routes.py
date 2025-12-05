@@ -1,15 +1,13 @@
-"""File API routes"""
-
 from uuid import UUID
 from typing import Optional
 from fastapi import APIRouter, Depends, UploadFile, File as FastAPIFile, Query, status
-from sqlalchemy.ext.asyncio import AsyncSession
-
-# Import module's DB dependency
-from modules.file_management.presentation.dependencies import get_file_db_session, get_file_service
 
 from shared.api.pagination import PaginationParams
+from shared.decorators.session_decorator import with_session  # ✅ Decorator
+
+from modules.file_management.presentation.dependencies import FileServiceDep
 from modules.file_management.application.dto.file_dto import FileUpdateDTO, FileShareDTO
+
 from .controllers.file_controller import FileController
 
 # Create router
@@ -18,9 +16,13 @@ router = APIRouter(prefix="/files", tags=["Files"])
 # Create controller
 controller = FileController()
 
-from uuid import UUID
+# Mock user ID (TODO: Replace with auth)
 MOCK_USER_ID = UUID("00000000-0000-0000-0000-000000000001")
 
+
+# ============================================================================
+# UPLOAD FILE
+# ============================================================================
 
 @router.post(
     "/upload",
@@ -29,14 +31,17 @@ MOCK_USER_ID = UUID("00000000-0000-0000-0000-000000000001")
     summary="Upload file",
     description="Upload a new file with metadata"
 )
+@with_session  # ✅ Auto inject session to ContextVar!
 async def upload_file(
     file: UploadFile = FastAPIFile(...),
     description: Optional[str] = Query(None, description="File description"),
     is_public: bool = Query(False, description="Make file public"),
-    session: AsyncSession = Depends(get_file_db_session),
-    file_service = Depends(get_file_service)
+    file_service: FileServiceDep = None
 ):
-    """Upload a new file"""
+    """
+    Upload a new file.
+    
+    """
     return await controller.upload_file(
         file=file,
         description=description,
@@ -46,20 +51,28 @@ async def upload_file(
     )
 
 
+# ============================================================================
+# GET FILE BY ID
+# ============================================================================
+
 @router.get(
     "/{file_id}",
     response_model=None,
     summary="Get file metadata",
     description="Retrieve file metadata by ID"
 )
+@with_session
 async def get_file(
     file_id: UUID,
-    session: AsyncSession = Depends(get_file_db_session),
-    file_service = Depends(get_file_service)
+    file_service: FileServiceDep = None 
 ):
     """Get file metadata"""
     return await controller.get_file(file_id, MOCK_USER_ID, file_service)
 
+
+# ============================================================================
+# UPDATE FILE
+# ============================================================================
 
 @router.put(
     "/{file_id}",
@@ -67,15 +80,19 @@ async def get_file(
     summary="Update file metadata",
     description="Update file description and visibility"
 )
+@with_session
 async def update_file(
     file_id: UUID,
     dto: FileUpdateDTO,
-    session: AsyncSession = Depends(get_file_db_session),
-    file_service = Depends(get_file_service)
+    file_service: FileServiceDep = None
 ):
     """Update file metadata"""
     return await controller.update_file(file_id, dto, MOCK_USER_ID, file_service)
 
+
+# ============================================================================
+# DELETE FILE
+# ============================================================================
 
 @router.delete(
     "/{file_id}",
@@ -83,14 +100,18 @@ async def update_file(
     summary="Delete file",
     description="Delete file (soft delete)"
 )
+@with_session
 async def delete_file(
     file_id: UUID,
-    session: AsyncSession = Depends(get_file_db_session),
-    file_service = Depends(get_file_service)
+    file_service: FileServiceDep = None
 ):
     """Delete file"""
     return await controller.delete_file(file_id, MOCK_USER_ID, file_service)
 
+
+# ============================================================================
+# LIST FILES
+# ============================================================================
 
 @router.get(
     "/",
@@ -98,12 +119,12 @@ async def delete_file(
     summary="List files",
     description="Get paginated list of files"
 )
+@with_session
 async def list_files(
     params: PaginationParams = Depends(),
     owner_only: bool = Query(False, description="Show only my files"),
     public_only: bool = Query(False, description="Show only public files"),
-    session: AsyncSession = Depends(get_file_db_session),
-    file_service = Depends(get_file_service)
+    file_service: FileServiceDep = None
 ):
     """List files with filters"""
     return await controller.list_files(
@@ -115,22 +136,29 @@ async def list_files(
     )
 
 
+# ============================================================================
+# SHARE FILE
+# ============================================================================
+
 @router.post(
     "/{file_id}/share",
     response_model=None,
     summary="Share file",
     description="Share file with another user"
 )
+@with_session
 async def share_file(
     file_id: UUID,
     dto: FileShareDTO,
-    session: AsyncSession = Depends(get_file_db_session),
-    file_service = Depends(get_file_service)
+    file_service: FileServiceDep = None
 ):
     """Share file with user"""
     return await controller.share_file(file_id, dto, MOCK_USER_ID, file_service)
 
 
+# ============================================================================
+# DOWNLOAD FILE
+# ============================================================================
 
 @router.get(
     "/{file_id}/download",
@@ -143,10 +171,10 @@ async def share_file(
         }
     }
 )
+@with_session
 async def download_file(
     file_id: UUID,
-    session: AsyncSession = Depends(get_file_db_session),
-    file_service = Depends(get_file_service)
+    file_service: FileServiceDep = None
 ):
     """Download file"""
     return await controller.download_file(file_id, MOCK_USER_ID, file_service)

@@ -5,10 +5,12 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.repositories.base_repository import BaseRepository
+from infrastructure.database.session_context import get_current_session
+
 from modules.user_management.domain.entities.user import User
 from modules.user_management.domain.value_objects.email import Email
 from modules.user_management.domain.repositories.user_repository import IUserRepository
-from infrastructure.database.session_context import get_current_session
+
 from ..models import UserModel
 
 
@@ -20,8 +22,23 @@ class UserRepository(BaseRepository[User, UserModel], IUserRepository):
         Initialize user repository.
 
         """
-        self._session : AsyncSession = get_current_session()
-        super().__init__(self._session, User, UserModel)
+        super().__init__(User, UserModel)
+    
+    @property
+    def _session(self) -> AsyncSession:
+        """
+        Lazy load session from ContextVar.
+        
+        Session được get mỗi khi property được access,
+        đảm bảo session đã được set bởi @with_session decorator.
+        
+        Returns:
+            AsyncSession from ContextVar
+            
+        Raises:
+            RuntimeError: If no session in ContextVar
+        """
+        return get_current_session()
     
     async def save(self, user: User) -> User:
         """
