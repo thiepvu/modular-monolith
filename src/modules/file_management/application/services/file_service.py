@@ -1,16 +1,27 @@
-"""File application service"""
+"""
+File Application Service - WITH CORRECT FACADE
 
-from typing import List, BinaryIO
+FileService sử dụng Facade để isolate cross-module dependencies.
+"""
+
+from typing import List, BinaryIO, Tuple
 from uuid import UUID
+import logging
 
-from core.exceptions.base_exceptions import NotFoundException, ForbiddenException, ValidationException
+from core.exceptions.base_exceptions import (
+    NotFoundException,
+    ForbiddenException,
+    ValidationException
+)
 from modules.file_management.domain.entities.file import File
 from modules.file_management.domain.repositories.file_repository import IFileRepository
 from modules.file_management.application.interfaces.file_service import IFileService
 from modules.file_management.application.interfaces.file_storage_service import IFileStorageService
 
+# ✅ ONLY import facade - NOT UserService!
 from modules.file_management.application.facades.file_facades_service import FileServiceFacade
-from ..dto.file_dto import (
+
+from modules.file_management.application.dto.file_dto import (
     FileUploadDTO,
     FileUpdateDTO,
     FileResponseDTO,
@@ -18,19 +29,24 @@ from ..dto.file_dto import (
     FileShareDTO,
     FileDownloadResponseDTO
 )
-from ..dto.mappers import FileMapper
+from modules.file_management.application.dto.mappers import FileMapper
+
+logger = logging.getLogger(__name__)
 
 
 class FileService(IFileService):
     """
     File application service.
-    Orchestrates file-related use cases.
+    
+    Uses Facade pattern to isolate cross-module dependencies.
+    FileService KHÔNG biết về User module!
     """
     
     def __init__(
         self,
         file_repository: IFileRepository,
-        storage_service: IFileStorageService
+        storage_service: IFileStorageService,
+        facade: FileServiceFacade  # ✅ Facade instance!
     ):
         """
         Initialize file service.
@@ -38,11 +54,14 @@ class FileService(IFileService):
         Args:
             file_repository: File repository
             storage_service: File storage service
+            facade: Cross-module facade (handles user operations)
         """
         self._repository = file_repository
         self._storage = storage_service
-        self.facade = FileServiceFacade()
+        self._facade = facade  # ✅ Store facade instance
         self._mapper = FileMapper()
+        
+        logger.info("FileService initialized with facade")
     
     async def upload_file(
         self,
@@ -60,14 +79,23 @@ class FileService(IFileService):
             
         Returns:
             Uploaded file DTO
+            
+        Raises:
+            ValidationException: If owner doesn't exist
         """
-        # check owner 
-        owner_exists = await self.facade.check_owner_exists(owner_id)
+        logger.info(f"Uploading file: {dto.original_name} for owner: {owner_id}")
+        
+        # ✅ Use facade - FileService doesn't know about UserService!
+        owner_exists = await self._facade.check_owner_exists(owner_id)
         if not owner_exists:
+            logger.warning(f"Upload failed: Owner {owner_id} does not exist")
             raise ValidationException(
                 f"Owner user {owner_id} does not exist or is inactive. "
                 "Please ensure the user account is valid."
             )
+        
+        logger.debug(f"Owner validated via facade: {owner_id}")
+        
         # Generate unique filename
         unique_name = self._storage.generate_unique_filename(dto.original_name)
         
@@ -88,6 +116,8 @@ class FileService(IFileService):
         
         # Save to repository
         saved = await self._repository.add(file)
+        
+        logger.info(f"File uploaded successfully: {saved.id}")
         
         return self._mapper.to_response_dto(saved)
     
@@ -141,7 +171,8 @@ class FileService(IFileService):
             raise ForbiddenException("Only file owner can update metadata")
         
         # Update metadata
-        file.update_metadata(dto.original_name, dto.description)
+        if dto.original_name or dto.description:
+            file.update_metadata(dto.original_name, dto.description)
         
         # Update visibility
         if dto.is_public is not None:
@@ -232,8 +263,18 @@ class FileService(IFileService):
         if file.owner_id != owner_id:
             raise ForbiddenException("Only file owner can share")
         
+        # ✅ Validate target user via facade
+        target_exists = await self._facade.check_user_exists(dto.user_id)
+        if not target_exists:
+            logger.warning(f"Share failed: Target user {dto.user_id} does not exist")
+            raise ValidationException(
+                f"Target user {dto.user_id} does not exist or is inactive"
+            )
+        
         file.share_with(dto.user_id)
         updated = await self._repository.update(file)
+        
+        logger.info(f"File {file_id} shared with user {dto.user_id}")
         
         return self._mapper.to_response_dto(updated)
     
@@ -241,7 +282,7 @@ class FileService(IFileService):
         self,
         file_id: UUID,
         user_id: UUID
-    ) -> tuple[FileDownloadResponseDTO, bytes]:
+    ) -> Tuple[FileDownloadResponseDTO, bytes]:
         """
         Download file content.
         

@@ -17,7 +17,7 @@ router = APIRouter(prefix="/files", tags=["Files"])
 controller = FileController()
 
 # Mock user ID (TODO: Replace with auth)
-MOCK_USER_ID = UUID("00000000-0000-0000-0000-000000000001")
+MOCK_USER_ID = UUID("9acbe950-6c96-42df-9314-829e74cc64ef")
 
 
 # ============================================================================
